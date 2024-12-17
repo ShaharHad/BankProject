@@ -3,17 +3,18 @@ const jwt = require('jsonwebtoken');
 const User = require('../db_models/user.model');
 
 module.exports = ( async (req, res, next) => {
-    
-    const {token} = req.cookies;
 
-    console.log(token);
-
-    const token2 = req.header('Authorization');
-    if(null == token2){
+    if(null == req.cookies){
         return res.status(401).json({message: "Access denied"});
     }
 
-    jwt.verify(token2, process.env.TOKEN_SECRET, (err, decode) => {
+    const {token} = req.cookies;
+
+    if(null == token){
+        return res.status(401).json({message: "Access denied"});
+    }
+
+    jwt.verify(token, process.env.TOKEN_SECRET, (err, decode) => {
         if(err){
             return res.status(401).json({message: "token not valid"});
         }

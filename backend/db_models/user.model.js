@@ -19,6 +19,10 @@ const UserSchema = mongoose.Schema({
         phone:{
             type: String,
             required: [true, "Please enter phone"]
+        },
+        balance: {
+            type: Number,
+            default: 500
         }
     },
     {
