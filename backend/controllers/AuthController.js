@@ -1,39 +1,39 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const User = require('../db_models/user.model');
+const Account = require('../db_models/account.model');
 const dbConnection = require('../db_connection/db_connection');
 
 exports.register = async(req, res) => {
 
     if(!req.body.email || !req.body.name || !req.body.password || !req.body.phone){
-        return res.status(401).json({message: "One of parameters is empty"});
+        return res.status(400).json({message: "One of parameters is empty"});
     }
-    let user_data = req.body;
+    let account_data = req.body;
     try{
-        user_data.password = await bcrypt.hash(user_data.password, Number(process.env.HASH_NUMBER));
+        account_data.password = await bcrypt.hash(account_data.password, Number(process.env.HASH_NUMBER));
     }catch(err){
         return res.status(500).json({message: err.message});
     }
 
-    User.create(user_data).then((user) => {
-        if(!user){
-            return res.status(500).json({message: "Fail to create user"});
+    Account.create(account_data).then((account) => {
+        if(!account){
+            return res.status(500).json({message: "Fail to create account"});
         }
 
-        const collection_name = user._id.toString();
+        const collection_name = account._id.toString();
 
         dbConnection.createCollection(collection_name).then(() => {
-            return res.status(200).json({message: "Successfully created user"});
+            return res.status(200).json({message: "Successfully created account"});
         }).catch((err) => {
             console.error(err);
-            User.deleteOne({email: user_data.email}).then(() => {
+            Account.deleteOne({email: account_data.email}).then(() => {
                 return res.status(500).json({message: "Fail to create transaction collection"});
             })
         });
     }).catch((err) => {
         if (err.name === "MongoServerError" && err.code === 11000){
-            return res.status(401).json({message: "Duplicate user"});
+            return res.status(409).json({message: "Duplicate account"});
         }
         return res.status(500).json({message: err.message});
     });
@@ -45,17 +45,17 @@ exports.login = async(req, res) => {
     const password = req.body.password;
 
     if(!req.body.email ||  !req.body.password){
-        return res.status(401).json({message: "One of parameters is empty"});
+        return res.status(400).json({message: "One of parameters is empty"});
     }
 
-    await User.findOne({email: email}).then(async (user) => {
-        if(!user){
-            return res.status(401).json({message: "user not found"});
+    await Account.findOne({email: email}).then(async (account) => {
+        if(!account){
+            return res.status(404).json({message: "Account not found"});
         }
 
-        const compare_result = await bcrypt.compare(password, user.password);
+        const compare_result = await bcrypt.compare(password, account.password);
         if(!compare_result){
-            return res.status(401).json({message: "Authentication failed"});
+            return res.status(400).json({message: "Authentication failed"});
         }
 
         const token = jwt.sign({email: email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
@@ -65,17 +65,24 @@ exports.login = async(req, res) => {
             sameSite: true,
         });
 
-        const newUser = {
-            email: user.email,
-            name: user.name,
-            phone: user.phone,
+        const newAccount = {
+            _id: account._id,
+            email: account.email,
+            name: account.name,
+            phone: account.phone,
+            balance: account.balance
         }
 
-        return res.status(200).json(newUser);
+        return res.status(200).json(newAccount);
     }).catch((err) => {
         console.log(err.message);
         return res.status(500).json({message: "Server error"});
-    })
+    });
+}
+
+//TODO if there is time
+exports.resetPassword = async(req, res) => {
+    const email = req.body.email;
 
 }
 

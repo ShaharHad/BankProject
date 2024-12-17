@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const UserSchema = mongoose.Schema({
+const AccountSchema = mongoose.Schema({
         email: {
             type: String,
             required: [true, "Please enter enter email"], // second item in array is custome massage !!!
@@ -30,6 +30,6 @@ const UserSchema = mongoose.Schema({
     }
 );
 
-const User = mongoose.model("User", UserSchema);
+const Account = mongoose.model("User", AccountSchema);
 
-module.exports = User;
+module.exports = Account;

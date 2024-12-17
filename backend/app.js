@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 const authRoutes = require('./routes/AuthRouter');
-const userRoutes = require('./routes/UserRouter');
+const accountRouter = require('./routes/AccountRouter');
 const transactionRoutes = require('./routes/TransactionRouter');
 const authMiddleware = require('./middleware/AuthMiddleware');
 
@@ -21,7 +21,7 @@ app.use(cors({
 
 app.use('/auth', authRoutes);
 app.use(authMiddleware);
-app.use('/user/transaction', transactionRoutes);
-app.use('/user', userRoutes);
+app.use('/account/transaction', transactionRoutes);
+app.use('/account', accountRouter);
 
 module.exports = app;

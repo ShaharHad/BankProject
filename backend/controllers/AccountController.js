@@ -1,7 +1,7 @@
 
 exports.changePassword = async(req, res) => {
     try{
-        return res.status(200).json({message: "success to get user data"});
+        return res.status(200).json({message: "Success to get user data"});
     }
 
     catch(err){
@@ -21,7 +21,7 @@ exports.getBalance = async(req, res) => {
     }
 }
 
-exports.getUser = async(req, res) => {
+exports.getAccount = async(req, res) => {
     if(!req.user){
         return res.status(404).json({message:"Authentication failed"});
     }
