@@ -5,6 +5,6 @@ const router = express.Router();
 
 // router.post('/change_password', accountController.changePassword); TODO finish if have time
 router.get('/balance', accountController.getBalance);
-router.get('/account', accountController.getAccount);
+router.get('/', accountController.getAccount);
 
 module.exports = router;

@@ -13,8 +13,8 @@ exports.sendPayment = async(req, res) => {
         return res.status(400).json({message: "One of parameters is empty"});
     }
 
-    if(payment > 0){
-
+    if(payment <= 0){
+        return res.status(402).json({message:"Payment have to be positive"});
     }
 
     if(user.balance < payment){
@@ -73,8 +73,8 @@ exports.sendPayment = async(req, res) => {
 exports.deposit = async(req, res) => {
     const payment = req.body.payment;
 
-    if(!payment){
-        return res.status(400).json({message: "Payment dont exist"});
+    if(!payment || 0 >= payment){
+        return res.status(400).json({message: "Payment should be exist and positive"});
     }
 
     const user = req.user;
@@ -93,8 +93,8 @@ exports.deposit = async(req, res) => {
 exports.withdraw = async(req, res) => {
     const payment = req.body.payment;
 
-    if(!payment){
-        return res.status(400).json({message: "Payment dont exist"});
+    if(!payment || 0 >= payment){
+        return res.status(400).json({message: "Payment should be exist and positive"});
     }
 
     const user = req.user;
@@ -123,8 +123,9 @@ exports.getTransactions = async(req, res) => {
         const documents = await user_transaction_collection.find().toArray();
 
         const user_transactions = documents.map((doc) => {
-            doc.toJson();
-        })
+            JSON.parse(JSON.stringify(doc));
+            return doc;
+        });
 
         return res.status(200).json({transactions: user_transactions});
     }catch(err){

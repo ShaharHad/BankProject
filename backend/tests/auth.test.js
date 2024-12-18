@@ -3,9 +3,9 @@ const app = require("../app");
 const dbConnection = require("../db_connection/db_connection");
 const User = require("../db_models/account.model");
 
-let userCollection1;
-let userCollection2;
-let userCollection3;
+let accountCollection1;
+let accountCollection2;
+let accountCollection3;
 
 const account1 = {
     name: "shahar1",
@@ -37,9 +37,9 @@ afterAll(async() => {
         await User.deleteOne({email: account1.email});
         await User.deleteOne({email: account2.email});
         await User.deleteOne({email: account3.email});
-        await userCollection1.drop();
-        await userCollection2.drop();
-        await userCollection3.drop();
+        await accountCollection1.drop();
+        await accountCollection2.drop();
+        await accountCollection3.drop();
         await dbConnection.close(); // close db connection
     } catch(err) {
         console.log(err);
@@ -138,7 +138,7 @@ describe("POST /auth/login", () => {
             .send(account1)
             .expect("Content-Type", /json/)
             .expect(200);
-        userCollection1 = dbConnection.collection(res.body._id.toString());
+        accountCollection1 = dbConnection.collection(res.body._id.toString());
         const {password, ...account} = account1;
         expect(res.body).toEqual(
             expect.objectContaining(account)
@@ -151,7 +151,7 @@ describe("POST /auth/login", () => {
             .send(account2)
             .expect("Content-Type", /json/)
             .expect(200);
-        userCollection2 = dbConnection.collection(res.body._id.toString());
+        accountCollection2= dbConnection.collection(res.body._id.toString());
         const {password, ...account} = account2;
         expect(res.body).toEqual(
             expect.objectContaining(account)
@@ -164,7 +164,7 @@ describe("POST /auth/login", () => {
             .send(account3)
             .expect("Content-Type", /json/)
             .expect(200);
-        userCollection3 = dbConnection.collection(res.body._id.toString());
+        accountCollection3 = dbConnection.collection(res.body._id.toString());
         const {password, ...account} = account3;
         expect(res.body).toEqual(
             expect.objectContaining(account)

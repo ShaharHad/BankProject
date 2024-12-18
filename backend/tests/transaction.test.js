@@ -11,23 +11,23 @@ let transactionCollection2;
 let transactionCollection3;
 
 let account1 = {
-    name: "shahar1",
-    email: "shahar1@gmail.com",
-    password: "shahar1@gmail.com",
+    name: "test1",
+    email: "test1@gmail.com",
+    password: "test1@gmail.com",
     phone: "050000000",
 }
 
 let account2 = {
-    name: "shahar2",
-    email: "shahar2@gmail.com",
-    password: "shahar2@gmail.com",
+    name: "test2",
+    email: "test2@gmail.com",
+    password: "test2@gmail.com",
     phone: "050000000",
 }
 
 let account3 = {
-    name: "shahar3",
-    email: "shahar3@gmail.com",
-    password: "shahar3@gmail.com",
+    name: "test3",
+    email: "test3@gmail.com",
+    password: "test3@gmail.com",
     phone: "050000000",
 }
 
@@ -65,26 +65,26 @@ afterAll(async() => {
         await transactionCollection3.drop();
         await dbConnection.close(); // close db connection
     } catch(err) {
-        console.log(err);
+        console.error("Error during cleanup: ", err);
     }
 });
 
-describe("POST /account/transaction/send_payment", () => {
+describe("POST /account/transaction/payment", () => {
 
     test("send payment from account1 to account2", async () => {
         const send_money = {
             payment: money_amount,
-            sender: "shahar1@gmail.com",
-            receiver: "shahar2@gmail.com",
+            sender: "test1@gmail.com",
+            receiver: "test2@gmail.com",
         }
 
         const receiver_amount_before = await request(app).post("/auth/login").send({
-            email: "shahar2@gmail.com",
-            password: "shahar2@gmail.com",
+            email: "test2@gmail.com",
+            password: "test2@gmail.com",
         });
 
         const res = await request(app)
-            .post("/account/transaction/send_payment")
+            .post("/account/transaction/payment")
             .set("cookie", cookie_account1)
             .send(send_money)
             .expect("Content-Type", /json/)
@@ -92,8 +92,8 @@ describe("POST /account/transaction/send_payment", () => {
         expect(res.body.current_balance).toBe(account1.balance - money_amount);
 
         const receiver_amount_after = await request(app).post("/auth/login").send({
-            email: "shahar2@gmail.com",
-            password: "shahar2@gmail.com",
+            email: "test2@gmail.com",
+            password: "test2@gmail.com",
         });
         expect(receiver_amount_after.body.balance).toBe(receiver_amount_before.body.balance + money_amount);
 
@@ -102,12 +102,12 @@ describe("POST /account/transaction/send_payment", () => {
     test("send payment greater then balance from account1 to account2", async () => {
         const send_money = {
             payment: 1555000,
-            sender: "shahar1@gmail.com",
-            receiver: "shahar2@gmail.com",
+            sender: "test1@gmail.com",
+            receiver: "test2@gmail.com",
         }
 
         const res = await request(app)
-            .post("/account/transaction/send_payment")
+            .post("/account/transaction/payment")
             .set("cookie", cookie_account1)
             .send(send_money)
             .expect("Content-Type", /json/)
@@ -119,12 +119,12 @@ describe("POST /account/transaction/send_payment", () => {
     test("should get missing parameters - payment missing", async () => {
 
         const send_money = {
-            sender: "shahar1@gmail.com",
-            receiver: "shahar2@gmail.com",
+            sender: "test1@gmail.com",
+            receiver: "test2@gmail.com",
         }
 
         const res = await request(app)
-            .post("/account/transaction/send_payment")
+            .post("/account/transaction/payment")
             .set("cookie", cookie_account1)
             .send(send_money)
             .expect("Content-Type", /json/)
@@ -136,12 +136,12 @@ describe("POST /account/transaction/send_payment", () => {
     test("should get missing parameters - sender missing", async () => {
 
         const send_money = {
-            payment: "shahar1@gmail.com",
-            receiver: "shahar2@gmail.com",
+            payment: "test1@gmail.com",
+            receiver: "test2@gmail.com",
         }
 
         const res = await request(app)
-            .post("/account/transaction/send_payment")
+            .post("/account/transaction/payment")
             .set("cookie", cookie_account1)
             .send(send_money)
             .expect("Content-Type", /json/)
@@ -153,12 +153,12 @@ describe("POST /account/transaction/send_payment", () => {
     test("should get missing parameters - receiver missing", async () => {
 
         const send_money = {
-            payment: "shahar1@gmail.com",
-            sender: "shahar2@gmail.com",
+            payment: "test1@gmail.com",
+            sender: "test2@gmail.com",
         }
 
         const res = await request(app)
-            .post("/account/transaction/send_payment")
+            .post("/account/transaction/payment")
             .set("cookie", cookie_account1)
             .send(send_money)
             .expect("Content-Type", /json/)
@@ -170,7 +170,7 @@ describe("POST /account/transaction/send_payment", () => {
     test("should get missing parameters - all missing", async () => {
 
         const res = await request(app)
-            .post("/account/transaction/send_payment")
+            .post("/account/transaction/payment")
             .set("cookie", cookie_account1)
             .send({})
             .expect("Content-Type", /json/)
@@ -187,7 +187,7 @@ describe("POST /account/transaction/deposit", () => {
 
         const account2_before = await request(app).post("/auth/login").send({
             email: account2.email,
-            password: "shahar2@gmail.com",
+            password: "test2@gmail.com",
         });
 
         const payment = {
@@ -212,7 +212,39 @@ describe("POST /account/transaction/deposit", () => {
             .send({})
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("Payment dont exist");
+        expect(res.body.message).toBe("Payment should be exist and positive");
+
+    }, 10000);
+
+    test("payment is 0 - get error", async () => {
+
+        const payment = {
+            payment: 0
+        }
+
+        const res = await request(app)
+            .post("/account/transaction/deposit")
+            .set("cookie", cookie_account3)
+            .send(payment)
+            .expect("Content-Type", /json/)
+            .expect(400);
+        expect(res.body.message).toBe("Payment should be exist and positive");
+
+    }, 10000);
+
+    test("payment is less then 0 - get error", async () => {
+
+        const payment = {
+            payment: -256
+        }
+
+        const res = await request(app)
+            .post("/account/transaction/deposit")
+            .set("cookie", cookie_account3)
+            .send(payment)
+            .expect("Content-Type", /json/)
+            .expect(400);
+        expect(res.body.message).toBe("Payment should be exist and positive");
 
     }, 10000);
 
@@ -224,7 +256,7 @@ describe("POST /account/transaction/withdraw", () => {
 
         const account3_before = await request(app).post("/auth/login").send({
             email: account3.email,
-            password: "shahar3@gmail.com",
+            password: "test3@gmail.com",
         });
 
         const payment = {
@@ -249,7 +281,7 @@ describe("POST /account/transaction/withdraw", () => {
             .send({})
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("Payment dont exist");
+        expect(res.body.message).toBe("Payment should be exist and positive");
 
     }, 10000);
 
@@ -269,8 +301,98 @@ describe("POST /account/transaction/withdraw", () => {
 
     }, 10000);
 
+    test("payment is 0 - get error", async () => {
+
+        const payment = {
+            payment: 0
+        }
+
+        const res = await request(app)
+            .post("/account/transaction/withdraw")
+            .set("cookie", cookie_account3)
+            .send(payment)
+            .expect("Content-Type", /json/)
+            .expect(400);
+        expect(res.body.message).toBe("Payment should be exist and positive");
+
+    }, 10000);
+
+    test("payment is less then 0 - get error", async () => {
+
+        const payment = {
+            payment: -256
+        }
+
+        const res = await request(app)
+            .post("/account/transaction/withdraw")
+            .set("cookie", cookie_account3)
+            .send(payment)
+            .expect("Content-Type", /json/)
+            .expect(400);
+        expect(res.body.message).toBe("Payment should be exist and positive");
+
+    }, 10000);
 });
 
+describe("GET /account/transaction/transactions", () => {
+    test("success get all account transactions", async () => {
+
+        let send_money = {
+            payment: money_amount,
+            sender: "test1@gmail.com",
+            receiver: "test3@gmail.com",
+        }
+
+        await request(app)
+            .post("/account/transaction/payment")
+            .set("cookie", cookie_account1)
+            .send(send_money)
+
+        await request(app)
+            .post("/account/transaction/payment")
+            .set("cookie", cookie_account1)
+            .send(send_money)
+
+        send_money.payment = 100;
+
+        await request(app)
+            .post("/account/transaction/payment")
+            .set("cookie", cookie_account1)
+            .send(send_money)
+
+        send_money = {
+            payment: 15,
+            sender: "test3@gmail.com",
+            receiver: "test1@gmail.com",
+        }
+
+        await request(app)
+            .post("/account/transaction/payment")
+            .set("cookie", cookie_account3)
+            .send(send_money)
+
+
+        const res = await request(app)
+            .get("/account/transaction/transactions")
+            .set("cookie", cookie_account3)
+            .expect("Content-Type", /json/)
+            .expect(200);
+
+        expect(res.body.transactions[0].payment).toBe(50);
+        expect(res.body.transactions[0].sender).toBe(account1.email);
+        expect(res.body.transactions[0].receiver).toBe(account3.email);
+        expect(res.body.transactions[1].payment).toBe(50);
+        expect(res.body.transactions[1].sender).toBe(account1.email);
+        expect(res.body.transactions[1].receiver).toBe(account3.email);
+        expect(res.body.transactions[2].payment).toBe(100);
+        expect(res.body.transactions[2].sender).toBe(account1.email);
+        expect(res.body.transactions[2].receiver).toBe(account3.email);
+        expect(res.body.transactions[3].payment).toBe(15);
+        expect(res.body.transactions[3].sender).toBe(account3.email);
+        expect(res.body.transactions[3].receiver).toBe(account1.email);
+
+    })
+});
 
 
 
