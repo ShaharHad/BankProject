@@ -3,9 +3,10 @@ const bcrypt = require('bcryptjs');
 
 const Account = require('../db_models/account.model');
 const dbConnection = require('../db_connection/db_connection');
+// const Mail = require('../utils/Mail');
 
 exports.register = async(req, res) => {
-
+    // TODO create validation for parameters email and phone
     if(!req.body.email || !req.body.name || !req.body.password || !req.body.phone){
         return res.status(400).json({message: "One of parameters is empty"});
     }
@@ -15,11 +16,19 @@ exports.register = async(req, res) => {
     }catch(err){
         return res.status(500).json({message: err.message});
     }
-
     Account.create(account_data).then((account) => {
         if(!account){
             return res.status(500).json({message: "Fail to create account"});
         }
+
+        // cannot activate 2 step verification so nodemailer not working
+
+        // try{
+        //     mail.sendActivationLink(account.email);
+        // }catch(err){
+        //     Account.deleteOne({email: mail});
+        //     return res.status(500).json({message: "Couldn't send activation link to email"});
+        // }
 
         const collection_name = account._id.toString();
 
@@ -32,12 +41,14 @@ exports.register = async(req, res) => {
             })
         });
     }).catch((err) => {
+        Account.deleteOne({email: account_data.email});
         if (err.name === "MongoServerError" && err.code === 11000){
             return res.status(409).json({message: "Duplicate account"});
         }
         return res.status(500).json({message: err.message});
     });
 }
+
 
 exports.login = async(req, res) => {
 
@@ -48,10 +59,16 @@ exports.login = async(req, res) => {
         return res.status(400).json({message: "One of parameters is empty"});
     }
 
-    await Account.findOne({email: email}).then(async (account) => {
+     Account.findOne({email: email}).then(async (account) => {
         if(!account){
             return res.status(404).json({message: "Account not found"});
         }
+
+         // cannot activate 2 step verification so nodemailer not working
+
+         // if(!account.isActive){
+        //     return res.status(401).json({message: "Account not active"});
+        // }
 
         const compare_result = await bcrypt.compare(password, account.password);
         if(!compare_result){
@@ -59,18 +76,14 @@ exports.login = async(req, res) => {
         }
 
         const token = jwt.sign({email: email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
-        
-        res.cookie('token', token, {
-            httpOnly: true, 
-            sameSite: true,
-        });
 
         const newAccount = {
             _id: account._id,
             email: account.email,
             name: account.name,
             phone: account.phone,
-            balance: account.balance
+            balance: account.balance,
+            token: token
         }
 
         return res.status(200).json(newAccount);
@@ -78,6 +91,30 @@ exports.login = async(req, res) => {
         console.log(err.message);
         return res.status(500).json({message: "Server error"});
     });
+}
+// cannot activate 2 step verification so nodemailer not working
+exports.activateAccount = async(req, res) => {
+    const {token} = req.params;
+    if(!token){
+        return res.status(404).json({message: "Missing token"});
+    }
+
+    jwt.verify(token, process.env.TOKEN_SECRET).then(decoded => {
+        Account.findOne({email: decoded}).then((account) => {
+            if(!account){
+                return res.status(404).json({message: "Account not found"});
+            }
+
+            account.isActive = true;
+            res.send('<h1>Account activated successfully!</h1>');
+        }).catch((err) => {
+            console.error(err.message);
+            res.status(400).json({message: "account not found"});
+        });
+    }).catch((err) => {
+        console.error(err.message);
+        res.status(500).json({message: "Token not valid"});
+    })
 }
 
 //TODO if there is time

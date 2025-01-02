@@ -4,15 +4,13 @@ const User = require('../db_models/account.model');
 
 module.exports = ( async (req, res, next) => {
 
-    if(null == req.cookies){
+    const bearer_token = req.headers.authorization;
+
+    if(null == bearer_token || null == bearer_token.split(' ')[1]){
         return res.status(401).json({message: "Access denied"});
     }
 
-    const {token} = req.cookies;
-
-    if(null == token){
-        return res.status(401).json({message: "Access denied"});
-    }
+    const token = bearer_token.split(' ')[1];
 
     jwt.verify(token, process.env.TOKEN_SECRET, (err, decode) => {
         if(err){

@@ -3,33 +3,33 @@ const dbConnection = require('../db_connection/db_connection');
 
 exports.sendPayment = async(req, res) => {
 
-    const payment = req.body.payment;
+    const amount = req.body.amount;
     const receiver = req.body.receiver;
-    const sender = req.body.sender;
+    const sender = req.user.email;
 
     const user = req.user;
 
-    if(!payment || !receiver || !sender){
+    if(!amount || !receiver || !sender){
         return res.status(400).json({message: "One of parameters is empty"});
     }
 
-    if(payment <= 0){
-        return res.status(402).json({message:"Payment have to be positive"});
+    if(amount <= 0){
+        return res.status(402).json({message:"Amount have to be positive"});
     }
 
-    if(user.balance < payment){
+    if(user.balance < amount){
         return res.status(402).json({message: "User dont have enough money"});
     }
     const session = await dbConnection.startSession();
     session.startTransaction();
     try{
 
-        user.balance -= payment;
+        user.balance -= amount;
         await user.save();
 
         const account_receiver = await Account.findOneAndUpdate(
             {email: receiver},
-            {$inc: {balance: payment}},
+            {$inc: {balance: amount}},
             { new: true });
         if(!account_receiver){
             throw new Error('Receiver dont exist');
@@ -43,9 +43,11 @@ exports.sendPayment = async(req, res) => {
         }
 
         const transaction = {
-            payment: payment,
+            payment: amount,
             receiver: receiver,
-            sender: sender
+            sender: sender,
+            type: "transfer",
+            timestamp: Math.floor(Date.now() / 1000)
         }
 
         const res_sender = await sender_transaction_collection.insertOne(transaction);
@@ -71,46 +73,95 @@ exports.sendPayment = async(req, res) => {
 }
 
 exports.deposit = async(req, res) => {
-    const payment = req.body.payment;
+    const amount = req.body.amount;
 
-    if(!payment || 0 >= payment){
-        return res.status(400).json({message: "Payment should be exist and positive"});
+    if(!amount || 0 >= amount){
+        return res.status(400).json({message: "Amount should be exist and positive"});
     }
 
     const user = req.user;
 
-    user.balance += payment;
+    const session = await dbConnection.startSession();
+    session.startTransaction();
+    try{
 
-    user.save().then(() => {
+        user.balance += amount;
+        await user.save();
+
+        const transaction_collection = dbConnection.collection(user._id.toString());
+
+        if(!transaction_collection){
+            throw new Error('Receiver or sender transaction dont exist');
+        }
+
+        const transaction = {
+            payment: amount,
+            receiver: user.email,
+            sender: user.email,
+            type: 'deposit',
+            timestamp: Math.floor(Date.now() / 1000)
+        }
+
+        await transaction_collection.insertOne(transaction);
+
+        await session.commitTransaction();
+
         return res.status(200).json({current_balance: user.balance});
-    }).catch((err) => {
-        console.error(err)
-        return res.status(500).json({message: "Couldn't complete the transaction"});
-    });
-
+    }catch(err){
+        await session.abortTransaction();
+        return res.status(500).json({message: "Couldn't complete the deposit operation"});
+    }
+    finally {
+        await session.endSession();
+    }
 }
 
 exports.withdraw = async(req, res) => {
-    const payment = req.body.payment;
+    const amount = req.body.amount;
 
-    if(!payment || 0 >= payment){
-        return res.status(400).json({message: "Payment should be exist and positive"});
+    if(!amount || 0 >= amount){
+        return res.status(400).json({message: "Amount should be exist and positive"});
     }
 
     const user = req.user;
 
-    if(user.balance < payment){
+    if(user.balance < amount){
         return res.status(402).json({message: "User dont have enough money"});
     }
 
-    user.balance -= payment;
+    const session = await dbConnection.startSession();
+    session.startTransaction();
+    try{
 
-    user.save().then(() => {
+        user.balance -= amount;
+        await user.save();
+
+        const transaction_collection = dbConnection.collection(user._id.toString());
+
+        if(!transaction_collection){
+            throw new Error('Account transaction dont exist');
+        }
+
+        const transaction = {
+            payment: amount,
+            receiver: user.email,
+            sender: user.email,
+            type: 'withdraw',
+            timestamp: Math.floor(Date.now() / 1000)
+        }
+
+        await transaction_collection.insertOne(transaction);
+
+        await session.commitTransaction();
+
         return res.status(200).json({current_balance: user.balance});
-    }).catch((err) => {
-        console.error(err)
-        return res.status(500).json({message: "Couldn't complete the transaction"});
-    });
+    }catch(err){
+        await session.abortTransaction();
+        return res.status(500).json({message: "Couldn't complete the withdraw operation"});
+    }
+    finally {
+        await session.endSession();
+    }
 }
 
 exports.getTransactions = async(req, res) => {
@@ -127,7 +178,7 @@ exports.getTransactions = async(req, res) => {
             return doc;
         });
 
-        return res.status(200).json({transactions: user_transactions});
+        return res.status(200).json(user_transactions);
     }catch(err){
         console.error("error: ", err.message);
         return res.status(500).json({message: err.message});

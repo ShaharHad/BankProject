@@ -1,4 +1,5 @@
 
+// TODO finish the change password endpoint
 exports.changePassword = async(req, res) => {
     try{
         return res.status(200).json({message: "Success to get user data"});

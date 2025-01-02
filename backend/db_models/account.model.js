@@ -22,7 +22,11 @@ const AccountSchema = mongoose.Schema({
         },
         balance: {
             type: Number,
-            default: 500
+            default: 0
+        },
+        isActive: {
+            type: Boolean,
+            default: false
         }
     },
     {
@@ -30,6 +34,6 @@ const AccountSchema = mongoose.Schema({
     }
 );
 
-const Account = mongoose.model("User", AccountSchema);
+const Account = mongoose.model("Account", AccountSchema);
 
 module.exports = Account;

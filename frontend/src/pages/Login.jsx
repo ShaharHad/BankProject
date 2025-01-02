@@ -1,11 +1,15 @@
-import { useState } from "react";
+import { useState, useContext} from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import axios from 'axios'
+import {useGlobal} from "../components/GlobalProvider.jsx";
 
 axios.defaults.withCredentials = true;
 
 const Login = () => {
-  
+
+  const {setBalance} = useGlobal();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -18,12 +22,16 @@ const Login = () => {
       return;
     }
 
-    await axios.post("http://localhost:8000/auth/login", {
+    await axios.post("http://localhost:8000/api/auth/login", {
       email: email,
       password: password
     }).then((response) => {
+
+      setBalance(response.data.balance);
+      sessionStorage.setItem("token", response.data.token);
       navigate("/user/home", {state: response.data});
     }).catch((err) =>{
+      alert("Login failed");
       console.log(err.message);
     })
   }
@@ -34,12 +42,12 @@ const Login = () => {
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor="email">Email</label>
-          <input type="text" id="email" placeholder="Insert email" name="email" 
+          <input type="email" id="email" placeholder="Insert email" name="email"
             onChange={(e) => setEmail(e.target.value)}/>
         </div>
         <div>
           <label htmlFor="password">Password</label>
-          <input type="text" id="password" placeholder="Insert password" name="password" 
+          <input type="password" id="password" placeholder="Insert password" name="password"
             onChange={(e) => setPassword(e.target.value)}/>
         </div>
 

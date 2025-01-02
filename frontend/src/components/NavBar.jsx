@@ -4,8 +4,6 @@ import {useNavigate} from "react-router-dom";
 
 const NavBar = ({user_info}) => {
 
-  console.log('user_info', user_info);
-
   const navigate = useNavigate();
 
   return (
@@ -17,7 +15,7 @@ const NavBar = ({user_info}) => {
             >
               <AccountBalanceIcon/>
             </Icon>
-            <Typography variant="h6" sx={{flexGrow: 1}}>
+            <Typography variant="h5" sx={{flexGrow: 1}}>
               Bank
             </Typography>
             <Button
@@ -25,7 +23,30 @@ const NavBar = ({user_info}) => {
                 onClick={() => navigate('/user/home', {state: user_info})}>
               Home
             </Button>
-            <Button color="inherit" onClick={() => navigate('/login')}>Logout</Button>
+            <Button
+                color="inherit"
+                onClick={() => navigate('/user/deposit', {state: user_info})}>
+              Deposit
+            </Button>
+            <Button
+                color="inherit"
+                onClick={() => navigate('/user/withdraw', {state: user_info})}>
+              Withdraw
+            </Button>
+            <Button
+                color="inherit"
+                onClick={() => navigate('/user/transfer', {state: user_info})}>
+              Transfer
+            </Button>
+            <Button
+                color="inherit"
+                onClick={() => navigate('/user/transactions', {state: user_info})}>
+              Transactions
+            </Button>
+            <Button color="inherit" onClick={() => {
+              navigate('/login');
+              sessionStorage.removeItem("token");
+            }}>Logout</Button>
           </Toolbar>
         </AppBar>
 

@@ -19,7 +19,7 @@ const Register = () => {
       return;
     }
     
-    axios.post("http://localhost:8000/auth/register", {
+    axios.post("http://localhost:8000/api/auth/register", {
       email: email,
       password: password,
       phone: phone,
@@ -38,7 +38,7 @@ const Register = () => {
     <form className="form" onSubmit={handleSubmit}>
     <div>
         <label htmlFor="name">Name</label>
-        <input type="name" id="name" placeholder="Insert name" name="name"
+        <input type="text" id="name" placeholder="Insert name" name="name"
           onChange={(e) => setName(e.target.value)}/>
       </div>
       <div>

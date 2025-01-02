@@ -8,23 +8,23 @@ let accountCollection2;
 let accountCollection3;
 
 const account1 = {
-    name: "shahar1",
-    email: "shahar1@gmail.com",
-    password: "shahar1@gmail.com",
+    name: "test1",
+    email: "test1@gmail.com",
+    password: "test1@gmail.com",
     phone: "050000000",
 }
 
 const account2 = {
-    name: "shahar2",
-    email: "shahar2@gmail.com",
-    password: "shahar2@gmail.com",
+    name: "test2",
+    email: "test2@gmail.com",
+    password: "test2@gmail.com",
     phone: "050000000",
 }
 
 const account3 = {
-    name: "shahar3",
-    email: "shahar3@gmail.com",
-    password: "shahar3@gmail.com",
+    name: "test3",
+    email: "test3@gmail.com",
+    password: "test3@gmail.com",
     phone: "050000000",
 }
 
@@ -46,10 +46,10 @@ afterAll(async() => {
     }
 });
 
-describe("POST /auth/register", () => {
+describe("POST /api/auth/register", () => {
     test("register account1 successfully", async () => {
         const res = await request(app)
-            .post("/auth/register")
+            .post("/api/auth/register")
             .send(account1)
             .expect("Content-Type", /json/)
             .expect(200);
@@ -58,7 +58,7 @@ describe("POST /auth/register", () => {
 
     test("register account2 successfully", async () => {
         const res = await request(app)
-            .post("/auth/register")
+            .post("/api/auth/register")
             .send(account2)
             .expect("Content-Type", /json/)
             .expect(200);
@@ -67,7 +67,7 @@ describe("POST /auth/register", () => {
 
     test("register account3 successfully", async () => {
         const res = await request(app)
-            .post("/auth/register")
+            .post("/api/auth/register")
             .send(account3)
             .expect("Content-Type", /json/)
             .expect(200);
@@ -76,7 +76,7 @@ describe("POST /auth/register", () => {
 
     test("should get duplicate error", async () => {
         const res = await request(app)
-            .post("/auth/register")
+            .post("/api/auth/register")
             .send(account1)
             .expect("Content-Type", /json/)
             .expect(409);
@@ -87,7 +87,7 @@ describe("POST /auth/register", () => {
     test("should get missing parameters - email missing", async () => {
         const {email, ...account} = account1;
         const res = await request(app)
-            .post("/auth/register")
+            .post("/api/auth/register")
             .send(account)
             .expect("Content-Type", /json/)
             .expect(400);
@@ -98,7 +98,7 @@ describe("POST /auth/register", () => {
     test("should get missing parameters - password missing", async () => {
         const {password, ...account} = account1;
         const res = await request(app)
-            .post("/auth/register")
+            .post("/api/auth/register")
             .send(account)
             .expect("Content-Type", /json/)
             .expect(400);
@@ -109,7 +109,7 @@ describe("POST /auth/register", () => {
     test("should get missing parameters - name missing", async () => {
         const {name, ...account} = account1;
         const res = await request(app)
-            .post("/auth/register")
+            .post("/api/auth/register")
             .send(account)
             .expect("Content-Type", /json/)
             .expect(400);
@@ -120,7 +120,7 @@ describe("POST /auth/register", () => {
     test("should get missing parameters - phone missing", async () => {
         const {phone, ...account} = account1;
         const res = await request(app)
-            .post("/auth/register")
+            .post("/api/auth/register")
             .send(account)
             .expect("Content-Type", /json/)
             .expect(400);
@@ -131,10 +131,10 @@ describe("POST /auth/register", () => {
 });
 
 
-describe("POST /auth/login", () => {
+describe("POST /api/auth/login", () => {
     test("should return the account1 info ", async () => {
         const res = await request(app)
-            .post("/auth/login")
+            .post("/api/auth/login")
             .send(account1)
             .expect("Content-Type", /json/)
             .expect(200);
@@ -143,11 +143,12 @@ describe("POST /auth/login", () => {
         expect(res.body).toEqual(
             expect.objectContaining(account)
         );
+        expect(res.body.token).not.toBeNull();
     }, 10000);
 
     test("should return the account2 info ", async () => {
         const res = await request(app)
-            .post("/auth/login")
+            .post("/api/auth/login")
             .send(account2)
             .expect("Content-Type", /json/)
             .expect(200);
@@ -160,7 +161,7 @@ describe("POST /auth/login", () => {
 
     test("should return the account3 info ", async () => {
         const res = await request(app)
-            .post("/auth/login")
+            .post("/api/auth/login")
             .send(account3)
             .expect("Content-Type", /json/)
             .expect(200);
@@ -173,10 +174,10 @@ describe("POST /auth/login", () => {
 
     test("should return error missing parameter - email missing ", async () => {
         const login_data = {
-            password: "shahar1@gmail.com"
+            password: "test1@gmail.com"
         }
         const res = await request(app)
-            .post("/auth/login")
+            .post("/api/auth/login")
             .send(login_data)
             .expect("Content-Type", /json/)
             .expect(400);
@@ -185,10 +186,10 @@ describe("POST /auth/login", () => {
 
     test("should return error missing parameter - password missing ", async () => {
         const login_data = {
-            email: "shahar1@gmail.com"
+            email: "test1@gmail.com"
         }
         const res = await request(app)
-            .post("/auth/login")
+            .post("/api/auth/login")
             .send(login_data)
             .expect("Content-Type", /json/)
             .expect(400);
@@ -198,7 +199,7 @@ describe("POST /auth/login", () => {
 
     test("should return error missing parameters - body missing ", async () => {
         const res = await request(app)
-            .post("/auth/login")
+            .post("/api/auth/login")
             .send({})
             .expect("Content-Type", /json/)
             .expect(400);
@@ -209,10 +210,10 @@ describe("POST /auth/login", () => {
     test("should return error not found account", async () => {
         const login_data = {
             email: "shahar123@gmail.com",
-            password: "shahar1@gmail.com"
+            password: "test1@gmail.com"
         }
         const res = await request(app)
-            .post("/auth/login")
+            .post("/api/auth/login")
             .send(login_data)
             .expect("Content-Type", /json/)
             .expect(404);
@@ -222,11 +223,11 @@ describe("POST /auth/login", () => {
 
     test("should return authentication failed", async () => {
         const login_data = {
-            email: "shahar1@gmail.com",
+            email: "test1@gmail.com",
             password: "asfsafddas"
         }
         const res = await request(app)
-            .post("/auth/login")
+            .post("/api/auth/login")
             .send(login_data)
             .expect("Content-Type", /json/)
             .expect(400);
