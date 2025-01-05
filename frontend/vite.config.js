@@ -4,5 +4,7 @@ import react from '@vitejs/plugin-react'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: "https://shaharhad.github.io/BankProject/frontend",
+  server:{
+    port: 5001,
+  }
 })

@@ -2,8 +2,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from 'axios'
 
+
+import {useGlobal} from "../components/GlobalProvider.jsx";
+
 const Register = () => {
 
+  const {baseUrl} = useGlobal();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
@@ -19,7 +23,7 @@ const Register = () => {
       return;
     }
     
-    axios.post("http://localhost:8000/api/auth/register", {
+    axios.post(baseUrl + "/auth/register", {
       email: email,
       password: password,
       phone: phone,

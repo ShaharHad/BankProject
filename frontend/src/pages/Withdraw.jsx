@@ -7,7 +7,7 @@ import NavBar from "../components/NavBar.jsx";
 
 const Withdraw = () => {
 
-    const {setBalance} = useGlobal();
+    const {setBalance, baseUrl} = useGlobal();
     const { state } = useLocation();
     const [amount, setAmount] = useState(0);
     const [message, setMessage] = useState("");
@@ -18,7 +18,7 @@ const Withdraw = () => {
 
         setIsLoading(true);
         console.log("amount type: " + typeof amount);
-        await Axios.post("http://localhost:8000/api/account/transaction/withdraw", {amount: parseInt(amount)})
+        await Axios.post(baseUrl + "/account/transaction/withdraw", {amount: parseInt(amount)})
             .then((response) => {
                 setBalance(response.data.current_balance);
                 setMessage("Withdraw success");

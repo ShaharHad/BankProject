@@ -5,20 +5,23 @@ import NavBar from "../components/NavBar.jsx";
 import Axios from "../utils/Axios.js";
 import {useGlobal} from "../components/GlobalProvider.jsx";
 
+
 const Deposit = () => {
 
-    const {setBalance} = useGlobal();
+    const {setBalance, baseUrl} = useGlobal();
     const { state } = useLocation();
     const [amount, setAmount] = useState(0);
     const [message, setMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+
+    console.log("base url: " + baseUrl);
 
     const handleDeposit = async (e) => {
         e.preventDefault();
 
         setIsLoading(true);
 
-        await Axios.post("http://localhost:8000/api/account/transaction/deposit", {amount: parseInt(amount)})
+        await Axios.post( baseUrl + "/account/transaction/deposit", {amount: parseInt(amount)})
             .then((response) => {
                 setBalance(response.data.current_balance);
                 setMessage("Deposit success");

@@ -11,7 +11,7 @@ import BalanceCard from "../components/BalanceCard.jsx";
 
 const Home = () => {
 
-    const {balance}  = useGlobal();
+    const {balance, baseUrl}  = useGlobal();
     const [transactions, setTransactions] = useState([]);
     const {state} = useLocation();
 
@@ -19,7 +19,7 @@ const Home = () => {
     useEffect(() => {
         const fetchTransactions= async () => {
 
-            await Axios.get("http://localhost:8000/api/account/transaction")
+            await Axios.get(baseUrl + "/account/transaction")
                 .then((response) => {
                     setTransactions(response.data);
                 }).catch((err) =>{

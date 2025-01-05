@@ -1,4 +1,4 @@
-import { useState, useContext} from "react";
+import { useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import axios from 'axios'
@@ -8,7 +8,7 @@ axios.defaults.withCredentials = true;
 
 const Login = () => {
 
-  const {setBalance} = useGlobal();
+  const {setBalance, baseUrl} = useGlobal();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,7 +22,7 @@ const Login = () => {
       return;
     }
 
-    await axios.post("http://localhost:8000/api/auth/login", {
+    await axios.post(baseUrl + "/auth/login", {
       email: email,
       password: password
     }).then((response) => {

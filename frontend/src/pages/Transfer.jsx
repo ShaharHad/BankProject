@@ -7,7 +7,7 @@ import NavBar from "../components/NavBar.jsx";
 
 const Transfer = () => {
 
-    const {setBalance} = useGlobal();
+    const {setBalance, baseUrl} = useGlobal();
     const { state } = useLocation();
     const [receiver, setReceiver] = useState("");
     const [amount, setAmount] = useState("");
@@ -19,7 +19,7 @@ const Transfer = () => {
 
         setIsLoading(true);
 
-        await Axios.post("http://localhost:8000/api/account/transaction/payment",
+        await Axios.post(baseUrl + "/account/transaction/payment",
             {amount: parseInt(amount), receiver: receiver}).then((response) => {
                 setBalance(response.data.current_balance);
                 setMessage("Payment transfer success");
