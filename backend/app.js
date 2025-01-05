@@ -15,7 +15,7 @@ app.use(express.json()); // middleware for nodejs to parse json !!!
 app.use(cookieParser());
 app.use(cors({
     // origin: 'http://localhost:5001',   // TODO when upload the frontend change it to the new IP/name
-    origin: 'https://677a55bedcdb6a0008c98ba8--cool-biscotti-36aad2.netlify.app/',
+    origin: 'https://cool-biscotti-36aad2.netlify.app/',
     credentials: true
 }));
 
