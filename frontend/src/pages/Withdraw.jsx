@@ -1,31 +1,40 @@
-import {useLocation} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 
 import Axios from "../utils/Axios.js";
 import {useGlobal} from "../components/GlobalProvider.jsx";
 import NavBar from "../components/NavBar.jsx";
+import {Box, Button, Container, TextField, Typography} from "@mui/material";
 
 const Withdraw = () => {
 
-    const {setBalance, baseUrl} = useGlobal();
-    const { state } = useLocation();
+    const navigate = useNavigate();
+    const {setNewBalance, baseUrl, setIsTransactionsChanged} = useGlobal();
     const [amount, setAmount] = useState(0);
     const [message, setMessage] = useState("");
+    const [isError, setIsError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleWithdraw = async (e) => {
         e.preventDefault();
 
         setIsLoading(true);
-        console.log("amount type: " + typeof amount);
         await Axios.post(baseUrl + "/account/transaction/withdraw", {amount: parseInt(amount)})
             .then((response) => {
-                setBalance(response.data.current_balance);
+                setNewBalance(response.data.current_balance);
+                setIsError(false);
                 setMessage("Withdraw success");
+                setIsTransactionsChanged(true);
             }).catch((err) =>{
-                if(err.status === 402){
-                    setMessage("dont have enough money to withdraw");
+                setIsError(true);
+                if(err.status === 401){ // authentication failed and should be exit to login
+                    alert("Navigate to login screen duo to inactive account");
+                    navigate("/login");
                 }
+                else if(err.status === 402){
+                    setMessage(err.response.data.message);
+                }
+
                 else{
                     setMessage("An error occurred. Please try again later.");
                     console.log(err.message);
@@ -38,29 +47,74 @@ const Withdraw = () => {
     }
 
     return (
-        <div>
-            <NavBar user_info={state} />
-            <h2>Withdraw</h2>
-            <form onSubmit={handleWithdraw}>
-                <div className="form-group">
-                    <label htmlFor="amount">Amount: </label>
-                    <input
-                        id="amount"
-                        type="number"
-                        name="amount"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        placeholder="Enter amount"
-                        required
-                    />
-                </div>
+        <>
+            <NavBar />
+            <Container
+                component="main"
+                maxWidth="false"
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '80vh',
 
-                <button type="submit" disabled={isLoading}>{isLoading ? "Processing..." : "Withdraw"}</button>
-            </form>
-            {message && (
-                <p>{message}</p>
-            )}
-        </div>
+                }}
+            >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'white',
+                        padding: 3,
+                        borderRadius: 2,
+                        boxShadow: 3,
+                        width: '20%',
+                    }}
+                >
+                    <Typography variant="h4" gutterBottom>
+                        Withdraw
+                    </Typography>
+                    <form onSubmit={handleWithdraw} style={{ width: '100%' }}>
+
+                        <TextField
+                            label="Amount"
+                            variant="outlined"
+                            fullWidth
+                            required
+                            type="number"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            margin="normal"
+                        />
+
+                        {message && (
+                            <Typography variant="body2"
+                                        color={isError ? "red" : "green"}
+                                        align="center"
+
+                            >
+                                {message}
+                            </Typography>
+                        )}
+
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            sx={{ mt: 2, textTransform: "none", fontSize: "100%"}}
+                            disabled={isLoading}
+
+                        >
+                            {isLoading ? "Processing..." : "Withdraw"}
+                        </Button>
+                    </form>
+
+                </Box>
+            </Container>
+        </>
     )
 }
 

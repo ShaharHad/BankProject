@@ -1,17 +1,19 @@
-import {useLocation} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 
 import Axios from "../utils/Axios.js";
 import {useGlobal} from "../components/GlobalProvider.jsx";
 import NavBar from "../components/NavBar.jsx";
+import {Box, Button, Container, TextField, Typography} from "@mui/material";
 
 const Transfer = () => {
 
-    const {setBalance, baseUrl} = useGlobal();
-    const { state } = useLocation();
+    const navigate = useNavigate();
+    const {setNewBalance, baseUrl, setIsTransactionsChanged} = useGlobal();
     const [receiver, setReceiver] = useState("");
     const [amount, setAmount] = useState("");
     const [message, setMessage] = useState("");
+    const [isError, setIsError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
     const handleTransaction = async (e) => {
@@ -21,11 +23,22 @@ const Transfer = () => {
 
         await Axios.post(baseUrl + "/account/transaction/payment",
             {amount: parseInt(amount), receiver: receiver}).then((response) => {
-                setBalance(response.data.current_balance);
+                setNewBalance(response.data.current_balance);
+                setIsError(false);
                 setMessage("Payment transfer success");
+            setIsTransactionsChanged(true);
             }).catch((err) =>{
-                if(err.status === 402) {
-                    setMessage("dont have enough money for transfer");
+                setIsError(true);
+                if(err.status === 401){ // authentication failed and should be exit to login
+                    alert("Navigate to login screen duo to inactive account");
+                    navigate("/login");
+                }
+                else if(err.status === 402) {
+                    console.log(err);
+                    setMessage(err.response.data.message);
+                }
+                else if(err.status === 404) {
+                    setMessage("Receiver dont exist");
                 }
                 else{
                     setMessage("An error occurred. Please try again later.");
@@ -38,42 +51,85 @@ const Transfer = () => {
     }
 
     return (
-        <div>
-            <NavBar user_info={state} />
-            <h2>Transfer</h2>
-            <form onSubmit={handleTransaction}>
-                <div className="form-group">
-                    <label htmlFor="amount">Amount: </label>
-                    <input
-                        id="amount"
-                        type="number"
-                        name="amount"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        placeholder="Enter amount"
-                        required
-                    />
-                </div>
+        <>
+            <NavBar />
+            <Container
+                component="main"
+                maxWidth="false"
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '80vh',
 
-                <div className="form-group">
-                    <label htmlFor="receiver">Receiver: </label>
-                    <input
-                        id="receiver"
-                        type="text"
-                        name="receiver"
-                        value={receiver}
-                        onChange={(e) => setReceiver(e.target.value)}
-                        placeholder="Enter receiver"
-                        required
-                    />
-                </div>
+                }}
+            >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'white',
+                        padding: 3,
+                        borderRadius: 2,
+                        boxShadow: 3,
+                        width: '20%',
+                    }}
+                >
+                    <Typography variant="h4" gutterBottom>
+                        Transfer
+                    </Typography>
+                    <form onSubmit={handleTransaction} style={{ width: '100%' }}>
 
-                <button type="submit" disabled={isLoading}>{isLoading ? "Processing..." : "Transfer"}</button>
-            </form>
-            {message && (
-                <p>{message}</p>
-            )}
-        </div>
+                        <TextField
+                            label="Amount"
+                            variant="outlined"
+                            fullWidth
+                            required
+                            type="number"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            margin="normal"
+                        />
+
+                        <TextField
+                            label="Receiver"
+                            variant="outlined"
+                            fullWidth
+                            required
+                            type="email"
+                            value={receiver}
+                            onChange={(e) => setReceiver(e.target.value)}
+                            margin="normal"
+                        />
+
+                        {message && (
+                            <Typography variant="body2"
+                                        color={isError ? "red" : "green"}
+                                        align="center"
+
+                            >
+                                {message}
+                            </Typography>
+                        )}
+
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            sx={{ mt: 2, textTransform: "none", fontSize: "100%"}}
+                            disabled={isLoading}
+
+                        >
+                            {isLoading ? "Processing..." : "Transfer"}
+                        </Button>
+                    </form>
+
+                </Box>
+            </Container>
+        </>
     )
 }
 

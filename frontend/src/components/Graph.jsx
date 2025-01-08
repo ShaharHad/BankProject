@@ -2,9 +2,14 @@ import {Line} from "react-chartjs-2"
 import {Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend} from "chart.js";
 import {useState} from "react";
 
+import {formatTimestamp} from "../utils/TimeOperation.js"
+import {useGlobal} from "./GlobalProvider.jsx";
+
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend); // for render
 
 const Graph = (data) => {
+
+    const {balance} = useGlobal();
 
     const options = {
         responsive: true,
@@ -14,24 +19,23 @@ const Graph = (data) => {
     const visibleData = 7;
     const [currentIndex, setCurrentIndex] = useState(0);
     const transactions = data.transactions;
+    let sum = Number(balance);
     let y = [];
     let x = [];
-    let sum = 0;
+
+    y.push(Number(balance));
+    x.push(formatTimestamp(Math.floor(Date.now() / 1000)));
 
     transactions.forEach((transaction) => {
         if(transaction.type === "withdraw" || (transaction.type === "transfer" && transaction.sender === data.email)) {
-            sum -= transaction.payment;
-
+            sum += transaction.payment;
         }
         else{
-            sum += transaction.payment;
+            sum -= transaction.payment;
         }
         y.push(sum);
 
-        const formattedDate = new Date(transaction.timestamp * 1000).toISOString()
-            .slice(0, 19).replace('T', ' '); // format: "YYYY-MM-DD HH:MM:SS"
-
-        x.push(formattedDate);
+        x.push(transaction.timestamp);
     });
 
 

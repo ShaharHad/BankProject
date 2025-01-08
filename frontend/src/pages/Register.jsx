@@ -4,6 +4,7 @@ import axios from 'axios'
 
 
 import {useGlobal} from "../components/GlobalProvider.jsx";
+import {Box, Button, Container, TextField, Typography} from "@mui/material";
 
 const Register = () => {
 
@@ -12,6 +13,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [phone, setPhone] = useState('');
   const [name, setName] = useState('');
+  const [message, setMessage] = useState("");
 
   const navigate = useNavigate();
 
@@ -19,7 +21,7 @@ const Register = () => {
     e.preventDefault();
 
     if (!email || !password || !phone) {
-      alert("All fields are required!");
+      setMessage("All fields are required!");
       return;
     }
     
@@ -32,44 +34,122 @@ const Register = () => {
       console.log(response);
       navigate("/login");
     }).catch((err) =>{
-      console.log(err.message);
+      if(err.response.status === 400){
+        setMessage("One or more parameters missing");
+      }
+      else if(err.response.status === 409){
+        setMessage("Email already exists");
+      }
+      else{
+          setMessage("An error occurred. Please try again later.");
+      }
+
     });
   }
 
   return (
-    <div>
-    <h1>Register</h1>
-    <form className="form" onSubmit={handleSubmit}>
-    <div>
-        <label htmlFor="name">Name</label>
-        <input type="text" id="name" placeholder="Insert name" name="name"
-          onChange={(e) => setName(e.target.value)}/>
-      </div>
-      <div>
-        <label htmlFor="email">Email</label>
-        <input type="email" id="email" placeholder="Insert email" name="email"
-          onChange={(e) => setEmail(e.target.value)}/>
-      </div>
-      <div>
-        <label htmlFor="password">Password</label>
-        <input type="password" id="password" placeholder="Insert password" name="password"
-          onChange={(e) => setPassword(e.target.value)}/>
-      </div>
-      <div>
-        <label htmlFor="phone">Phone number</label>
-        <input type="text" id="phone" placeholder="Insert phone number" name="phone"
-          onChange={(e) => setPhone(e.target.value)}/>
-      </div>
+      <Container
+          component="main"
+          maxWidth="xs"
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '80vh',
+          }}
+      >
+        <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'white',
+              padding: 3,
+              borderRadius: 2,
+              boxShadow: 3,
+            }}
+        >
+          <Typography variant="h4" gutterBottom>
+            Register
+          </Typography>
 
-      <button type='submit'>Register</button>
-      
-    </form>
-    <div>
-        <span>Already have an account? </span>
-        <Link to={'/login'}>Login</Link>
-      </div>
-  </div>
-  )
-}
+          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+
+            <TextField
+                label="Name"
+                variant="outlined"
+                fullWidth
+                required
+                tyoe="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                margin="normal"
+            />
+
+            <TextField
+                label="Email"
+                variant="outlined"
+                fullWidth
+                required
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                margin="normal"
+            />
+
+            <TextField
+                label="Password"
+                variant="outlined"
+                fullWidth
+                required
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                margin="normal"
+            />
+
+            <TextField
+                label="Phone"
+                variant="outlined"
+                fullWidth
+                required
+                type="number"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                margin="normal"
+            />
+
+
+            {message && (
+                <Typography variant="body2" color="error" align="center" sx={{ marginTop: 1 }}>
+                  {message}
+                </Typography>
+            )}
+
+            <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ mt: 2, textTransform: "none" }}
+            >
+              Register
+            </Button>
+          </form>
+
+          <Box mt={2}>
+            <Typography variant="body3" align="center">
+              Don't have an account?
+              <Link to="/login" style={{ textDecoration: 'none', color: '#007bff' }}>
+                Login
+              </Link>
+            </Typography>
+          </Box>
+        </Box>
+      </Container>
+  );
+};
+
 
 export default Register

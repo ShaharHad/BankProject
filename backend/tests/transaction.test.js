@@ -49,24 +49,24 @@ beforeAll( async () => {
     await request(app).post("/api/auth/register").send(account4);
 
     const res1 = await request(app).post("/api/auth/login").send(account1);
-    account1 = res1.body;
+    account1 = res1.body.account;
     transactionCollection1 = dbConnection.collection(account1._id.toString());
-    token_account1 = account1.token;
+    token_account1 = res1.body.token;
 
     const res2 = await request(app).post("/api/auth/login").send(account2);
-    account2 = res2.body;
-    transactionCollection2 = dbConnection.collection(account2._id);
-    token_account2 = account2.token;
+    account2 = res2.body.account;
+    transactionCollection2 = dbConnection.collection(account2._id.toString());
+    token_account2 = res2.body.token;
 
     const res3 = await request(app).post("/api/auth/login").send(account3);
-    account3 = res3.body;
-    transactionCollection3 = dbConnection.collection(account3._id);
-    token_account3 = account3.token;
+    account3 = res3.body.account;
+    transactionCollection3 = dbConnection.collection(account3._id.toString());
+    token_account3 = res3.body.token;
 
     const res4 = await request(app).post("/api/auth/login").send(account4);
-    account4 = res4.body;
-    transactionCollection4 = dbConnection.collection(account4._id);
-    token_account4 = account4.token;
+    account4 = res4.body.account;
+    transactionCollection4 = dbConnection.collection(account4._id.toString());
+    token_account4 = res4.body.token;
 
 });
 
@@ -91,7 +91,6 @@ describe("POST /api/account/transaction/payment", () => {
     test("send payment from account1 to account2", async () => {
         const send_money = {
             amount: money_amount,
-            // sender: "test1@gmail.com",
             receiver: "test2@gmail.com",
         }
 
@@ -127,7 +126,6 @@ describe("POST /api/account/transaction/payment", () => {
     test("send payment greater then balance from account1 to account2", async () => {
         const send_money = {
             amount: 1555000,
-            // sender: "test1@gmail.com",
             receiver: "test2@gmail.com",
         }
 
@@ -187,6 +185,39 @@ describe("POST /api/account/transaction/payment", () => {
         expect(res.body.message).toBe("One of parameters is empty");
 
     }, 10000);
+
+    test("send payment equals to 0 from account1 to account2", async () => {
+        const send_money = {
+            amount: 0,
+            receiver: "test2@gmail.com",
+        }
+
+        const res = await request(app)
+            .post("/api/account/transaction/payment")
+            .set("Authorization", `Bearer ${token_account1}`)
+            .send(send_money)
+            .expect("Content-Type", /json/)
+            .expect(402);
+        expect(res.body.message).toBe("Amount should be positive and greater then 0");
+
+    }, 10000);
+
+    test("send payment less then 0 from account1 to account2", async () => {
+        const send_money = {
+            amount: -56,
+            receiver: "test2@gmail.com",
+        }
+
+        const res = await request(app)
+            .post("/api/account/transaction/payment")
+            .set("Authorization", `Bearer ${token_account1}`)
+            .send(send_money)
+            .expect("Content-Type", /json/)
+            .expect(402);
+        expect(res.body.message).toBe("Amount should be positive and greater then 0");
+
+    }, 10000);
+
 });
 
 
@@ -222,7 +253,7 @@ describe("POST /api/account/transaction/deposit", () => {
             .send({})
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("Amount should be exist and positive");
+        expect(res.body.message).toBe("Amount should be exist");
 
     }, 10000);
 
@@ -237,8 +268,8 @@ describe("POST /api/account/transaction/deposit", () => {
             .set("Authorization", `Bearer ${token_account3}`)
             .send(payment)
             .expect("Content-Type", /json/)
-            .expect(400);
-        expect(res.body.message).toBe("Amount should be exist and positive");
+            .expect(402);
+        expect(res.body.message).toBe("Amount should be positive and greater then 0");
 
     }, 10000);
 
@@ -253,8 +284,8 @@ describe("POST /api/account/transaction/deposit", () => {
             .set("Authorization", `Bearer ${token_account3}`)
             .send(payment)
             .expect("Content-Type", /json/)
-            .expect(400);
-        expect(res.body.message).toBe("Amount should be exist and positive");
+            .expect(402);
+        expect(res.body.message).toBe("Amount should be positive and greater then 0");
 
     }, 10000);
 
@@ -296,7 +327,7 @@ describe("POST /api/account/transaction/withdraw", () => {
             .send({})
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("Amount should be exist and positive");
+        expect(res.body.message).toBe("Amount should be exist");
 
     }, 10000);
 
@@ -327,8 +358,8 @@ describe("POST /api/account/transaction/withdraw", () => {
             .set("Authorization", `Bearer ${token_account3}`)
             .send(payment)
             .expect("Content-Type", /json/)
-            .expect(400);
-        expect(res.body.message).toBe("Amount should be exist and positive");
+            .expect(402);
+        expect(res.body.message).toBe("Amount should be positive and greater then 0");
 
     }, 10000);
 
@@ -343,8 +374,8 @@ describe("POST /api/account/transaction/withdraw", () => {
             .set("Authorization", `Bearer ${token_account3}`)
             .send(payment)
             .expect("Content-Type", /json/)
-            .expect(400);
-        expect(res.body.message).toBe("Amount should be exist and positive");
+            .expect(402);
+        expect(res.body.message).toBe("Amount should be positive and greater then 0");
 
     }, 10000);
 });

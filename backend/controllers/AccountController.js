@@ -1,4 +1,4 @@
-
+const logger = require('../utils/Logger');
 // TODO finish the change password endpoint
 exports.changePassword = async(req, res) => {
     try{
@@ -12,15 +12,16 @@ exports.changePassword = async(req, res) => {
 
 exports.getBalance = async(req, res) => {
     if(!req.user){
-        return res.status(404).json({message:"Authentication failed"});
+        logger.error(`Authentication failed`);
+        return res.status(401).json({message:"Authentication failed"});
     }
-
     return res.status(200).json({balance: req.user.balance});
 
 }
 
 exports.getAccount = async(req, res) => {
     if(!req.user){
+        logger.error(`Authentication failed`);
         return res.status(404).json({message:"Authentication failed"});
     }
 

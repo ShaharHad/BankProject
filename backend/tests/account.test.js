@@ -39,19 +39,19 @@ beforeAll( async () => {
     await request(app).post("/api/auth/register").send(account3);
 
     const res1 = await request(app).post("/api/auth/login").send(account1);
-    account1 = res1.body;
+    account1 = res1.body.account;
     transactionCollection1 = dbConnection.collection(account1._id.toString());
-    token_account1 = account1.token;
+    token_account1 = res1.body.token;
 
     const res2 = await request(app).post("/api/auth/login").send(account2);
-    account2 = res2.body;
-    transactionCollection2 = dbConnection.collection(account2._id);
-    token_account2 = account2.token;
+    account2 = res2.body.account;
+    transactionCollection2 = dbConnection.collection(account2._id.toString());
+    token_account2 = res2.body.token;
 
     const res3 = await request(app).post("/api/auth/login").send(account3);
-    account3 = res3.body;
-    transactionCollection3 = dbConnection.collection(account3._id);
-    token_account3 = account3.token;
+    account3 = res3.body.account;
+    transactionCollection3 = dbConnection.collection(account3._id.toString());
+    token_account3 = res3.body.token;
 });
 
 afterAll(async() => {

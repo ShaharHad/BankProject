@@ -138,12 +138,13 @@ describe("POST /api/auth/login", () => {
             .send(account1)
             .expect("Content-Type", /json/)
             .expect(200);
-        accountCollection1 = dbConnection.collection(res.body._id.toString());
+        accountCollection1 = dbConnection.collection(res.body.account._id.toString());
         const {password, ...account} = account1;
-        expect(res.body).toEqual(
+        expect(res.body.account).toEqual(
             expect.objectContaining(account)
         );
         expect(res.body.token).not.toBeNull();
+        expect(res.body.balance).not.toBeNull();
     }, 10000);
 
     test("should return the account2 info ", async () => {
@@ -152,9 +153,9 @@ describe("POST /api/auth/login", () => {
             .send(account2)
             .expect("Content-Type", /json/)
             .expect(200);
-        accountCollection2= dbConnection.collection(res.body._id.toString());
+        accountCollection2= dbConnection.collection(res.body.account._id.toString());
         const {password, ...account} = account2;
-        expect(res.body).toEqual(
+        expect(res.body.account).toEqual(
             expect.objectContaining(account)
         );
     }, 10000);
@@ -165,9 +166,9 @@ describe("POST /api/auth/login", () => {
             .send(account3)
             .expect("Content-Type", /json/)
             .expect(200);
-        accountCollection3 = dbConnection.collection(res.body._id.toString());
+        accountCollection3 = dbConnection.collection(res.body.account._id.toString());
         const {password, ...account} = account3;
-        expect(res.body).toEqual(
+        expect(res.body.account).toEqual(
             expect.objectContaining(account)
         );
     }, 10000);

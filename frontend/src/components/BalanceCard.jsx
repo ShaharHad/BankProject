@@ -5,7 +5,7 @@ import {Typography} from "@mui/material";
 const BalanceCard = ({balance}) => {
 
     return (
-        <Card >
+        <Card sx={{width: 1/4}}>
             <CardContent>
                 <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 18 }}>
                     Balance

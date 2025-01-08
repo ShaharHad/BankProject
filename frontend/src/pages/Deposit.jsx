@@ -1,32 +1,43 @@
-import {useLocation} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 
 import NavBar from "../components/NavBar.jsx";
 import Axios from "../utils/Axios.js";
 import {useGlobal} from "../components/GlobalProvider.jsx";
+import {Box, Button, Container, TextField, Typography} from "@mui/material";
 
 
 const Deposit = () => {
 
-    const {setBalance, baseUrl} = useGlobal();
-    const { state } = useLocation();
+    const navigate = useNavigate();
+    const {baseUrl, setIsTransactionsChanged, setNewBalance} = useGlobal();
     const [amount, setAmount] = useState(0);
     const [message, setMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isError, setIsError] = useState(false);
 
-    console.log("base url: " + baseUrl);
 
     const handleDeposit = async (e) => {
         e.preventDefault();
 
         setIsLoading(true);
-
+        console.log("amount: ", amount);
         await Axios.post( baseUrl + "/account/transaction/deposit", {amount: parseInt(amount)})
             .then((response) => {
-                setBalance(response.data.current_balance);
+                setNewBalance(response.data.current_balance);
+                setIsError(false);
                 setMessage("Deposit success");
+                setIsTransactionsChanged(true);
         }).catch((err) =>{
-            if(err.status !== 500) {
+            setIsError(true);
+            if(err.status === 401){ // authentication failed and should be exit to login
+                alert("Navigate to login screen duo to inactive account");
+                navigate("/login");
+            }
+            else if(err.status === 402){ // authentication failed and should be exit to login
+                setMessage(err.response.data.message);
+            }
+            else if(err.status !== 500) {
                 setMessage(err.message);
             }
             else{
@@ -40,29 +51,73 @@ const Deposit = () => {
     }
 
     return (
-        <div>
-            <NavBar user_info={state} />
-            <h2>Deposit</h2>
-            <form onSubmit={handleDeposit}>
-                <div className="form-group">
-                    <label htmlFor="amount">Amount: </label>
-                    <input
-                        id="amount"
-                        type="number"
-                        name="amount"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        placeholder="Enter amount"
-                        required
-                    />
-                </div>
+        <>
+            <NavBar />
+            <Container
+                component="main"
+                maxWidth="false"
+                sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    height: '80vh',
 
-                <button type="submit" disabled={isLoading}>{isLoading ? "Processing..." : "Deposit"}</button>
-            </form>
-            {message && (
-                <p>{message}</p>
-            )}
-        </div>
+                }}
+            >
+                <Box
+                    sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        backgroundColor: 'white',
+                        padding: 3,
+                        borderRadius: 2,
+                        boxShadow: 3,
+                        width: '20%',
+                    }}
+                >
+                    <Typography variant="h4" gutterBottom>
+                        Deposit
+                    </Typography>
+                    <form onSubmit={handleDeposit} style={{ width: '100%' }}>
+
+                        <TextField
+                            label="Amount"
+                            variant="outlined"
+                            fullWidth
+                            required
+                            type="number"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            margin="normal"
+                        />
+
+                        {message && (
+                            <Typography variant="body2"
+                                        color={isError ? "red" : "green"}
+                                        align="center"
+
+                            >
+                                {message}
+                            </Typography>
+                        )}
+
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            sx={{ mt: 2, textTransform: "none", fontSize: "100%"}}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? "Processing..." : "Deposit"}
+                        </Button>
+                    </form>
+
+                </Box>
+            </Container>
+        </>
     )
 }
 

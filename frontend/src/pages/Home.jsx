@@ -1,44 +1,70 @@
-import {useLocation} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
-import Stack from '@mui/material/Stack';
+import {Stack, CircularProgress} from '@mui/material';
 
 import {useGlobal} from "../components/GlobalProvider.jsx";
+import {formatTimestamp} from "../utils/TimeOperation.js";
 import NavBar from "../components/NavBar";
 import Graph from "../components/Graph.jsx";
 import Axios from "../utils/Axios.js";
 import BalanceCard from "../components/BalanceCard.jsx";
 
-
 const Home = () => {
 
-    const {balance, baseUrl}  = useGlobal();
-    const [transactions, setTransactions] = useState([]);
-    const {state} = useLocation();
-
+    const navigate = useNavigate();
+    const {account, balance, baseUrl, setIsTransactionsChanged, isTransactionsChanged, setTransactions, transactions}  = useGlobal();
+    const [message, setMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchTransactions= async () => {
-
+            setIsLoading(true);
             await Axios.get(baseUrl + "/account/transaction")
                 .then((response) => {
-                    setTransactions(response.data);
+                    response.data.sort((a,b) => b.timestamp - a.timestamp);
+                    setTransactions(response.data.map((transaction) => {
+                        transaction.timestamp = formatTimestamp(transaction.timestamp);
+                        return transaction;
+                    }));
+
+                    setIsTransactionsChanged(false);
                 }).catch((err) =>{
-                console.error("Error: " + err.message);
-            });
+                    if(err.status === 401){ // authentication failed and should be exited to login page
+                        alert("Navigate to login screen duo to inactive account");
+                        navigate("/login");
+                    }
+                    else{
+                        setMessage("An error occurred. Please try again later.");
+                    }
+                });
+            setIsLoading(false);
         }
-        fetchTransactions();
-    }, []);
+        if(isTransactionsChanged){
+            fetchTransactions();
+        }
+    }, [transactions]);
 
   return (
       <div>
-          <NavBar user_info={state} />
-          <h1>Welcome {state.name}</h1>
-          <Stack>
-              <BalanceCard balance={balance}/>
-              <Graph transactions={transactions} title={"7 days summary transactions"} />
-          </Stack>
+          <NavBar/>
+          {isLoading ? (
+              <CircularProgress />
+          ) : (
+                  <div>
+                      <h1>Welcome {account.name}</h1>
+                      <Stack>
+                          <BalanceCard balance={balance}/>
+                          {transactions !== null && transactions.length > 0 ?
+                              <Graph transactions={transactions} email={account.email} title={"7 last days summary transactions"}/>
+                              : <p>No transactions found</p>
+                          }
+                      </Stack>
+                      {message && <p style={{color: "red"}}>{message}</p>}
 
+                  </div>
+              )}
       </div>
+
   )
 }
 

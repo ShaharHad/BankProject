@@ -1,24 +1,24 @@
-import { useState} from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-import axios from 'axios'
-import {useGlobal} from "../components/GlobalProvider.jsx";
+import axios from 'axios';
+import { useGlobal } from "../components/GlobalProvider.jsx";
+import { TextField, Button, Box, Typography, Container } from '@mui/material';
 
 axios.defaults.withCredentials = true;
 
 const Login = () => {
-
-  const {setBalance, baseUrl} = useGlobal();
+  const { setBalance, baseUrl } = useGlobal();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
-      alert("All fields are required!");
+      setMessage("All fields are required!");
       return;
     }
 
@@ -26,40 +26,99 @@ const Login = () => {
       email: email,
       password: password
     }).then((response) => {
-
       setBalance(response.data.balance);
+      sessionStorage.setItem("balance", response.data.balance);
       sessionStorage.setItem("token", response.data.token);
-      navigate("/user/home", {state: response.data});
-    }).catch((err) =>{
-      alert("Login failed");
-      console.log(err.message);
+      sessionStorage.setItem("account", JSON.stringify(response.data.account));
+      navigate("/user/home");
+    }).catch((err) => {
+      if (err.response && (err.response.status === 400 || err.response.status === 404)) {
+        setMessage("Password or Email incorrect");
+      } else {
+        setMessage("An error occurred. Please try again later.");
+      }
     })
-  }
+  };
 
   return (
-    <div>
-      <h1>Login</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email</label>
-          <input type="email" id="email" placeholder="Insert email" name="email"
-            onChange={(e) => setEmail(e.target.value)}/>
-        </div>
-        <div>
-          <label htmlFor="password">Password</label>
-          <input type="password" id="password" placeholder="Insert password" name="password"
-            onChange={(e) => setPassword(e.target.value)}/>
-        </div>
+      <Container
+          component="main"
+          maxWidth="xs"
+          sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '80vh', // Full viewport height
+          }}
+      >
+        <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: 'white',
+              padding: 3,
+              borderRadius: 2,
+              boxShadow: 3,
+            }}
+        >
+          <Typography variant="h4" gutterBottom>
+            Login
+          </Typography>
+          <form onSubmit={handleSubmit} style={{ width: '100%' }}>
 
-        <button type="submit">Login</button>
+                <TextField
+                    label="Email"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    margin="normal"
+                />
 
-      </form>
-      <div>
-        <span>Don't have an account? </span>
-        <Link to={"/register"}>Register</Link>
-      </div>
-    </div>
-  )
-}
+                <TextField
+                    label="Password"
+                    variant="outlined"
+                    fullWidth
+                    required
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    margin="normal"
+                />
 
-export default Login
+
+            {message && (
+                <Typography variant="body2" color="error" align="center" sx={{ marginTop: 1 }}>
+                  {message}
+                </Typography>
+            )}
+
+            <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ mt: 2, textTransform: "none" }}
+            >
+              Login
+            </Button>
+          </form>
+
+          <Box mt={2}>
+            <Typography variant="body3" align="center">
+              Don't have an account?{' '}
+              <Link to="/register" style={{ textDecoration: 'none', color: '#007bff' }}>
+                Register
+              </Link>
+            </Typography>
+          </Box>
+        </Box>
+      </Container>
+  );
+};
+
+export default Login;
+
