@@ -19,6 +19,12 @@ const Transfer = () => {
     const handleTransaction = async (e) => {
         e.preventDefault();
 
+        if(!/^\d{1,6}$/.test(amount)){
+            setIsError(true);
+            setMessage("amount should be greater then 0 and smaller then 1000000");
+            return;
+        }
+
         setIsLoading(true);
 
         await Axios.post(baseUrl + "/account/transaction/payment",
@@ -70,7 +76,6 @@ const Transfer = () => {
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: 'white',
                         padding: 3,
                         borderRadius: 2,
                         boxShadow: 3,
@@ -87,7 +92,7 @@ const Transfer = () => {
                             variant="outlined"
                             fullWidth
                             required
-                            type="number"
+                            type="text"
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             margin="normal"

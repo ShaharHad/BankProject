@@ -24,8 +24,14 @@ const Register = () => {
       setMessage("All fields are required!");
       return;
     }
-    
-    axios.post(baseUrl + "/auth/register", {
+
+      if(!/^\d{10}$/.test(phone)){
+          setMessage("phone number have to be 10 digits!");
+          return;
+      }
+
+
+      axios.post(baseUrl + "/auth/register", {
       email: email,
       password: password,
       phone: phone,
@@ -64,7 +70,7 @@ const Register = () => {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: 'white',
+                backgroundColor: 'transparent',
               padding: 3,
               borderRadius: 2,
               boxShadow: 3,
@@ -114,11 +120,12 @@ const Register = () => {
                 variant="outlined"
                 fullWidth
                 required
-                type="number"
+                type="text"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
                 margin="normal"
-            />
+                placeholder="0509999999"
+                onChange={(e) => setPhone(e.target.value)}
+                />
 
 
             {message && (

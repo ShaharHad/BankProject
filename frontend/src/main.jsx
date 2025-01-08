@@ -1,8 +1,8 @@
 import {StrictMode} from 'react'
 import {createRoot} from 'react-dom/client'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
+import { ThemeProvider } from '@mui/material/styles';
 
-import './index.css'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import Home from "./pages/Home.jsx";
@@ -12,12 +12,14 @@ import Transfer from "./pages/Transfer.jsx";
 import Transactions from "./pages/Transactions.jsx";
 import {GlobalProvider} from "./components/GlobalProvider.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import theme from './components/Theme.js';
 
 
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+import {CssBaseline} from "@mui/material";
 
 
 const router = createBrowserRouter([
@@ -33,8 +35,11 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
-        <GlobalProvider>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <GlobalProvider>
                 <RouterProvider router={router}/>
-        </GlobalProvider>
+            </GlobalProvider>
+        </ThemeProvider>
     </StrictMode>,
 )

@@ -8,6 +8,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+import Box from '@mui/material/Box';
+import {Button} from "@mui/material";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
@@ -25,7 +27,7 @@ const CustomTable = (tableData) => {
     const columns = tableData.columns;
     const data = tableData.data;
     const [currentIndex, setCurrentIndex] = useState(0);
-    const visibleData = 10;
+    const visibleData = 7;
 
     const getCurrentData = () => {
         return data.slice(currentIndex, currentIndex + visibleData);
@@ -42,7 +44,7 @@ const CustomTable = (tableData) => {
 
 
     return (
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} sx={{boxShadow: 10}}>
           <Table sx={{minWidth: 650}} aria-label="customized table">
               <TableHead>
                   <TableRow>
@@ -54,7 +56,10 @@ const CustomTable = (tableData) => {
               <TableBody>
                   {getCurrentData().map((row, rowIndex) => {
                       return (
-                          <TableRow key={rowIndex} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                          <TableRow key={rowIndex} sx={{
+                              '&:last-child td, &:last-child th': { border: 0 },
+                              background: "#90d5ff",
+                          }}>
                               {columns.map((column) => {
                                 return(
                                   <TableCell key={column.key} align="center">{row[column.key]}</TableCell>
@@ -64,10 +69,40 @@ const CustomTable = (tableData) => {
                   })}
               </TableBody>
           </Table>
-          <div>
-              <button onClick={handlePrevious} disabled={currentIndex === 0}>Previous</button>
-              <button onClick={handleNext} disabled={currentIndex + visibleData >= data.length}>Next</button>
-          </div>
+          <Box
+              sx={{
+              display: 'flex',
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#90d5ff',
+              padding: 3,
+              borderRadius: 2,
+              minWidth: 650,
+              boxShadow: 0
+
+          }}>
+              <Button
+                  onClick={handlePrevious}
+                  disabled={currentIndex === 0}
+                  type="button"
+                  variant="contained"
+                  color="primary"
+                  sx={{margin: 2}}
+              >
+                  Previous
+              </Button>
+              <Button
+                  onClick={handleNext}
+                  disabled={currentIndex + visibleData >= data.length}
+                  type="button"
+                  variant="contained"
+                  color="primary"
+                  sx={{margin: 2}}
+              >
+                  Next
+              </Button>
+          </Box>
       </TableContainer>
     );
 }

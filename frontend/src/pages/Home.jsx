@@ -1,6 +1,6 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {Stack, CircularProgress} from '@mui/material';
+import {Stack, CircularProgress, Box} from '@mui/material';
 
 import {useGlobal} from "../components/GlobalProvider.jsx";
 import {formatTimestamp} from "../utils/TimeOperation.js";
@@ -50,7 +50,9 @@ const Home = () => {
           {isLoading ? (
               <CircularProgress />
           ) : (
-                  <div>
+                  <Box sx={{
+                      backgroundColor: "#90d5ff",
+                  }}>
                       <h1>Welcome {account.name}</h1>
                       <Stack>
                           <BalanceCard balance={balance}/>
@@ -61,7 +63,7 @@ const Home = () => {
                       </Stack>
                       {message && <p style={{color: "red"}}>{message}</p>}
 
-                  </div>
+                  </Box>
               )}
       </div>
 

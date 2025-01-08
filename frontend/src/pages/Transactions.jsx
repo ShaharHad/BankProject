@@ -60,7 +60,6 @@ const Transactions = () => {
                     <CircularProgress />
                 ) : (
                     <Stack>
-                        <h1>Balance</h1>
                         <BalanceCard balance={balance}/>
                         <h1>Transactions</h1>
                         {transactions !== null && transactions.length > 0 ?

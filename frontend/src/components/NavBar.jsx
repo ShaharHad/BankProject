@@ -1,4 +1,4 @@
-import {AppBar, Toolbar, Typography, Button, Icon} from '@mui/material';
+import {AppBar, Toolbar, Typography, Button, Icon, Container} from '@mui/material';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import {useNavigate} from "react-router-dom";
 import {useGlobal} from "./GlobalProvider.jsx";
@@ -10,7 +10,7 @@ const NavBar = () => {
   const navigate = useNavigate();
 
   return (
-      <div>
+      <Container maxWidth="false" disableGutters>
         <AppBar position="sticky">
           <Toolbar>
             <Icon
@@ -53,7 +53,7 @@ const NavBar = () => {
           </Toolbar>
         </AppBar>
 
-      </div>
+      </Container>
   );
 }
 

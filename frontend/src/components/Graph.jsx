@@ -1,11 +1,15 @@
 import {Line} from "react-chartjs-2"
 import {Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend} from "chart.js";
 import {useState} from "react";
+import Box from "@mui/material/Box";
+import {Button, Container} from "@mui/material";
+
 
 import {formatTimestamp} from "../utils/TimeOperation.js"
 import {useGlobal} from "./GlobalProvider.jsx";
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend); // for render
+
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 const Graph = (data) => {
 
@@ -23,7 +27,7 @@ const Graph = (data) => {
     let y = [];
     let x = [];
 
-    y.push(Number(balance));
+    y.push(sum);
     x.push(formatTimestamp(Math.floor(Date.now() / 1000)));
 
     transactions.forEach((transaction) => {
@@ -57,24 +61,73 @@ const Graph = (data) => {
     }
 
     const handleNext = () => {
-        setCurrentIndex((prevIndex) => {
-            return Math.min(prevIndex + visibleData, x.length - visibleData)
-        });
+        setCurrentIndex((prevIndex) =>
+            Math.min(prevIndex + visibleData, x.length - visibleData)
+        );
     }
+    
 
     return (
-        <div>
+        <Container
+            maxWidth="sx"
+            disableGutters
+        >
             <div>
                 <h2>{data.title}</h2>
             </div>
-            <div>
-                <Line options={options} data={getCurrentData()}></Line>
-            </div>
-            <div>
-                <button onClick={handlePrevious} disabled={currentIndex === 0}>Previous</button>
-                <button onClick={handleNext} disabled={currentIndex + visibleData >= x.length}>Next</button>
-            </div>
-        </div>
+            <Box
+                sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: 3,
+                borderRadius: 2,
+                margin: 1,
+                minWidth: 650,
+                boxShadow: 10
+            }}>
+                <Line
+                    options={options}
+                    data={getCurrentData()}
+                >
+                </Line>
+            </Box>
+            <Box
+                sx={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    padding: 3,
+                    borderRadius: 2,
+                    margin: 1,
+                    minWidth: 650,
+                    boxShadow: 0
+                }}
+            >
+                <Button
+                    onClick={handlePrevious}
+                    disabled={currentIndex === 0}
+                    type="button"
+                    variant="contained"
+                    color="primary"
+                    sx={{margin: 2}}
+                >
+                    Previous
+                </Button>
+                <Button
+                    onClick={handleNext}
+                    disabled={(currentIndex + visibleData) >= x.length}
+                    type="button"
+                    variant="contained"
+                    color="primary"
+                    sx={{margin: 2}}
+                >
+                    Next
+                </Button>
+            </Box>
+        </Container>
     );
 }
 
