@@ -1,28 +1,54 @@
-# Bank Application - Main README
+# Bank Application
 
-This repository contains a complete bank application consisting of a frontend and a backend, both housed in separate folders within the `app` directory. The frontend and backend work together to provide a full-stack application for managing user bank accounts.
+This repository contains both the frontend and backend for a bank application. The project is structured to provide a complete system for managing user accounts, performing transactions, and visualizing account summaries.
 
 ## Table of Contents
 
+- [Overview](#overview)
+- [Technologies Used](#technologies-used)
+- [Installation](#installation)
 
-- [Setup](#setup)
-- [Frontend](#frontend)
-- [Backend](#backend)
+## Overview
 
-## Setup
+This application allows users to:
 
-To set up the entire project locally, follow these steps:
+1. Register and log in to their accounts.
+2. View a graphical summary of transactions from the last 7 days.
+3. Perform banking operations such as deposits, withdrawals, and transfers.
+
+## Technologies Used
+
+- **Frontend**:
+    - Vite
+    - React
+    - Material-UI (MUI)
+
+- **Backend**:
+    - Node.js
+    - Express
+    - MongoDB
+    - Mongoose (for MongoDB object modeling)
+
+- **Database**:
+    - MongoDB is used as the database to store user information, transactions, and account data. Mongoose is employed to manage schema definitions and interactions with the MongoDB database.
+
+## Installation
+
+Follow these steps to set up and run the project:
 
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-repo.git
-   cd your-repo/app
+   cd your-repo
    ```
 
 2. Set up the backend:
    ```bash
    cd backend
    npm install
+   ```
+   Configure environment variables in the `.env` file as required. See [backend/README.md](./backend/README.md) for details.
+   ```bash
    npm run start
    ```
 
@@ -33,26 +59,7 @@ To set up the entire project locally, follow these steps:
    npm run dev
    ```
 
-4. Access the application:
-    - Frontend: Open [http://localhost:3000](http://localhost:3000) in your browser.
-    - Backend: The API server will be running on [http://localhost:5001](http://localhost:5001) (or the port specified in your backend configuration).
-
-## Frontend
-
-The frontend is built with:
-
-- **Vite**: For fast builds and hot module replacement.
-- **React**: For building user interfaces.
-- **Material-UI (MUI)**: For consistent and responsive design.
-
-For more details, see the [frontend README](./frontend/README.md).
-
-## Backend
-
-The backend is built with:
-
-- **Node.js**: For the runtime environment for javascript.
-- **Express**: For handling HTTP requests and APIs.
-
-For more details, see the [backend README](./backend/README.md).
-
+4. Access the application in your browser at:
+   ```
+   http://localhost:5001
+   ```
