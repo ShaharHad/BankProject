@@ -225,6 +225,25 @@ This repository provides a backend server for a banking application. The API sup
     }
     ```
 
+#### 5. **get transaction**
+- **Endpoint**: `/api/account/transaction/`
+- **Method**: GET
+
+- **Response**:
+  - **200 OK**
+    ```json
+    {
+      "transactions": "object"
+    }
+    ```
+
+  - **500 Fail**
+    ```json
+    {
+      "message": "server error"
+    }
+    ```
+
 ---
 
 ## Environment Variables

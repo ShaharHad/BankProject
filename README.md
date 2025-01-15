@@ -6,7 +6,10 @@ This repository contains both the frontend and backend for a bank application. T
 
 - [Overview](#overview)
 - [Technologies Used](#technologies-used)
+- [Authentication](#authentication)
+- [Password Security](#password-security)
 - [Installation](#installation)
+
 
 ## Overview
 
@@ -15,6 +18,7 @@ This application allows users to:
 1. Register and log in to their accounts.
 2. View a graphical summary of transactions from the last 7 days.
 3. Perform banking operations such as deposits, withdrawals, and transfers.
+4. View all transactions they send or get.
 
 ## Technologies Used
 
@@ -31,6 +35,18 @@ This application allows users to:
 
 - **Database**:
     - MongoDB is used as the database to store user information, transactions, and account data. Mongoose is employed to manage schema definitions and interactions with the MongoDB database.
+
+## Password Security
+
+The backend uses bcrypt to securely hash user passwords before storing them in the database. This ensures that even if the database is compromised, the original passwords cannot be easily retrieved. During authentication, bcrypt is also used to compare the hashed password with the user-provided password.
+
+## Authentication
+
+The system uses Bearer Tokens for secure communication between the frontend and backend. After a successful login, a JWT token is issued to the client, which must be included in the Authorization header of subsequent API requests:
+   ```bash
+   Authorization: Bearer <token>
+   ```
+This ensures that only authenticated users can access protected endpoints.
 
 ## Installation
 
