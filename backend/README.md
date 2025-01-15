@@ -1,6 +1,6 @@
 # Bank API
 
-This repository provides a backend server for a simple banking application. The API supports basic banking operations such as user authentication, deposits, withdrawals, and transfers.
+This repository provides a backend server for a banking application. The API supports basic banking operations such as user authentication, deposits, withdrawals, and transfers.
 
 ## Features
 
@@ -224,27 +224,6 @@ This repository provides a backend server for a simple banking application. The 
       "message": "Couldn't complete the transaction"
     }
     ```
-
----
-
-## Installation
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/bank-api.git
-   ```
-2. Navigate to the project directory:
-   ```bash
-   cd backend
-   ```
-3. Install dependencies:
-   ```bash
-   npm install
-   ```
-4. Start the server:
-   ```bash
-   npm start
-   ```
 
 ---
 
