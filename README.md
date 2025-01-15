@@ -6,8 +6,8 @@ This repository contains both the frontend and backend for a bank application. T
 
 - [Overview](#overview)
 - [Technologies Used](#technologies-used)
-- [Authentication](#authentication)
 - [Password Security](#password-security)
+- [Authentication](#authentication)
 - [Installation](#installation)
 
 
