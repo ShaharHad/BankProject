@@ -19,12 +19,6 @@ const Transfer = () => {
     const handleTransaction = async (e) => {
         e.preventDefault();
 
-        if(!/^\d{1,6}$/.test(amount)){
-            setIsError(true);
-            setMessage("amount should be greater then 0 and smaller then 1000000");
-            return;
-        }
-
         setIsLoading(true);
 
         await Axios.post(baseUrl + "/account/transaction/payment",
@@ -96,6 +90,8 @@ const Transfer = () => {
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             margin="normal"
+                            slotProps={{ htmlInput: { maxLength: 6 , minLength: 1} }}
+
                         />
 
                         <TextField
@@ -107,6 +103,7 @@ const Transfer = () => {
                             value={receiver}
                             onChange={(e) => setReceiver(e.target.value)}
                             margin="normal"
+                            slotProps={{ htmlInput: { maxLength: 30 , minLength: 6} }}
                         />
 
                         {message && (

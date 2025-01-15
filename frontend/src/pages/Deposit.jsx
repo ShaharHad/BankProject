@@ -20,13 +20,6 @@ const Deposit = () => {
     const handleDeposit = async (e) => {
         e.preventDefault();
 
-
-        if(!/^\d{1,6}$/.test(amount)){
-            setIsError(true);
-            setMessage("amount should be greater then 0 and smaller then 1000000");
-            return;
-        }
-
         setIsLoading(true);
         console.log("amount: ", amount);
         await Axios.post( baseUrl + "/account/transaction/deposit", {amount: parseInt(amount)})
@@ -97,7 +90,7 @@ const Deposit = () => {
                             value={amount}
                             onChange={(e) => setAmount(e.target.value)}
                             margin="normal"
-
+                            slotProps={{ htmlInput: { maxLength: 6 , minLength: 1} }}
                         />
 
                         {message && (

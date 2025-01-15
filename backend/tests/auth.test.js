@@ -231,7 +231,7 @@ describe("POST /api/auth/login", () => {
             .post("/api/auth/login")
             .send(login_data)
             .expect("Content-Type", /json/)
-            .expect(400);
+            .expect(401);
 
         expect(res.body.message).toBe("Authentication failed");
     }, 10000);

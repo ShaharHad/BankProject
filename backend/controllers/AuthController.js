@@ -14,7 +14,7 @@ exports.register = async(req, res) => {
     }
     let account_data = req.body;
     try{
-        account_data.password = await bcrypt.hash(account_data.password, Number(process.env.HASH_NUMBER));
+        account_data.password = await bcrypt.hash(account_data.password, Number(process.env.SALT));
     }catch(err){
         logger.error(`${req.body.email}: ${err.message}`);
         return res.status(500).json({message: err.message});
@@ -71,7 +71,7 @@ exports.login = async(req, res) => {
             return res.status(404).json({message: "Account not found"});
         }
 
-         // cannot activate 2 step verification so nodemailer not working
+         // need to activate email 2 step verification so nodemailer not working
 
          // if(!account.isActive){
         //     return res.status(401).json({message: "Account not active"});
@@ -80,7 +80,7 @@ exports.login = async(req, res) => {
         const compare_result = await bcrypt.compare(password, account.password);
         if(!compare_result){
             logger.error(`Authentication failed for ${req.body.email}`);
-            return res.status(400).json({message: "Authentication failed"});
+            return res.status(401).json({message: "Authentication failed"});
         }
 
         const token = jwt.sign({email: email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
@@ -123,7 +123,7 @@ exports.activateAccount = async(req, res) => {
     })
 }
 
-//TODO if there is time
+//TODO reset password functionality
 exports.resetPassword = async(req, res) => {
     const email = req.body.email;
 
