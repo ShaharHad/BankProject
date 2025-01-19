@@ -1,15 +1,10 @@
 
 const jwt = require('jsonwebtoken');
-const User = require('../db_models/account.model');
+const Account = require('../db_models/account.model');
 const logger = require('../utils/Logger');
-
-// const excludeRoutes = ["/auth/register", "/auth/login"];
 
 module.exports = ( async (req, res, next) => {
 
-    // if(excludeRoutes.includes(req.path)){
-    //     return next();
-    // }
     const bearer_token = req.headers.authorization;
 
     if(null == bearer_token || null == bearer_token.split(' ')[1]){
@@ -25,14 +20,14 @@ module.exports = ( async (req, res, next) => {
             return res.status(401).json({message: "token not valid"});
         }
 
-        User.findOne({email: decode.email}).then((user) => {
+        Account.findOne({email: decode.email}).then((account) => {
 
-            if(null == user){
-                logger.warn("user " + decode.email + " not found");
+            if(null == account){
+                logger.warn("account " + decode.email + " not found");
                 return res.status(401).json({message: "Authentication failed"});
             }
 
-            req.user = user;
+            req.user = account;
             next();
         }).catch((err) => {
             logger.error(err.message);

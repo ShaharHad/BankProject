@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const Account = require('../db_models/account.model');
 const dbConnection = require('../db_connection/db_connection');
 const logger = require("../utils/Logger");
-// const Mail = require('../utils/Mail');
+const mail = require('../utils/Mail');
 
 exports.register = async(req, res) => {
     // TODO create validation for parameters email and phone
@@ -25,14 +25,12 @@ exports.register = async(req, res) => {
             return res.status(500).json({message: "Fail to create account"});
         }
 
-        // cannot activate 2 step verification so nodemailer not working
-
-        // try{
-        //     mail.sendActivationLink(account.email);
-        // }catch(err){
-        //     Account.deleteOne({email: mail});
-        //     return res.status(500).json({message: "Couldn't send activation link to email"});
-        // }
+        try{
+            mail.sendActivationLink(account.email);
+        }catch(err){
+            Account.deleteOne({email: mail});
+            return res.status(500).json({message: "Couldn't send activation link to email"});
+        }
 
         const collection_name = account._id.toString();
 
@@ -71,11 +69,9 @@ exports.login = async(req, res) => {
             return res.status(404).json({message: "Account not found"});
         }
 
-         // need to activate email 2 step verification so nodemailer not working
-
-         // if(!account.isActive){
-        //     return res.status(401).json({message: "Account not active"});
-        // }
+         if(!account.isActive){
+            return res.status(401).json({message: "Account not active"});
+        }
 
         const compare_result = await bcrypt.compare(password, account.password);
         if(!compare_result){
@@ -97,29 +93,39 @@ exports.login = async(req, res) => {
         return res.status(500).json({message: "Server error"});
     });
 }
-// cannot activate 2 step verification so nodemailer not working
+
 exports.activateAccount = async(req, res) => {
-    const {token} = req.params;
+    const {token} = req.query;
     if(!token){
         return res.status(404).json({message: "Missing token"});
     }
 
-    jwt.verify(token, process.env.TOKEN_SECRET).then(decoded => {
-        Account.findOne({email: decoded}).then((account) => {
+    jwt.verify(token, process.env.TOKEN_SECRET,(err, decoded) => {
+        if(err){
+            logger.error(err.message);
+            res.status(500).json({message: "server error"});
+        }
+        Account.findOne({email: decoded.email}).then(async (account) => {
             if(!account){
                 logger.error(`${decoded} account not found`);
                 return res.status(404).json({message: "Account not found"});
             }
 
+            if(account.isActive){
+                logger.warn(`${decoded} Account already activated`);
+                return res.send('<h1>Account already activated !!!!</h1>');
+            }
+
             account.isActive = true;
-            res.send('<h1>Account activated successfully!</h1>');
+
+            await account.save();
+
+            return res.send('<h1>Account activated successfully!</h1>');
+
         }).catch((err) => {
             logger.error(err.message);
-            res.status(400).json({message: "account not found"});
+            return res.status(500).json({message: "server error"});
         });
-    }).catch((err) => {
-        logger.error(err.message);
-        res.status(500).json({message: "Token not valid"});
     })
 }
 
