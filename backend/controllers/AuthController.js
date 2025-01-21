@@ -95,7 +95,7 @@ exports.login = async(req, res) => {
 }
 
 exports.activateAccount = async(req, res) => {
-    const {token} = req.query;
+    const token  = req.params.token;
     if(!token){
         return res.status(404).json({message: "Missing token"});
     }

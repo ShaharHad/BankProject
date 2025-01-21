@@ -1,11 +1,15 @@
 const request = require("supertest");
+const jwt = require("jsonwebtoken");
+
 const app = require("../app");
 const dbConnection = require("../db_connection/db_connection");
 const User = require("../db_models/account.model");
 
+
 let accountCollection1;
 let accountCollection2;
 let accountCollection3;
+let accountCollection4;
 
 const account1 = {
     name: "test1",
@@ -28,6 +32,13 @@ const account3 = {
     phone: "050000000",
 }
 
+const account4 = {
+    name: "test4",
+    email: "test4@gmail.com",
+    password: "test4@gmail.com",
+    phone: "050000000",
+}
+
 beforeAll(() => {
 
 });
@@ -40,6 +51,15 @@ afterAll(async() => {
         await accountCollection1.drop();
         await accountCollection2.drop();
         await accountCollection3.drop();
+
+        const token = jwt.sign({email: account4.email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
+        await request(app).get("/api/auth/activateAccount/" + token);
+        const res = await request(app).post("/api/auth/login").send(account4);
+        accountCollection4 = dbConnection.collection(res.body.account._id.toString());
+
+        await User.deleteOne({email: account4.email});
+        await accountCollection4.drop();
+
         await dbConnection.close(); // close db connection
     } catch(err) {
         console.log(err);
@@ -53,8 +73,20 @@ describe("POST /api/auth/register", () => {
             .send(account1)
             .expect("Content-Type", /json/)
             .expect(200);
+
         expect(res.body.message).toBe("Successfully created account");
+
     }, 10000);
+
+    test("account1 activated successfully", async () => {
+        const token = jwt.sign({email: account1.email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
+
+        await request(app)
+            .get("/api/auth/activateAccount/" + token)
+            .expect("Content-Type", "text/html; charset=utf-8")
+            .expect(200);
+    }, 10000);
+
 
     test("register account2 successfully", async () => {
         const res = await request(app)
@@ -63,6 +95,16 @@ describe("POST /api/auth/register", () => {
             .expect("Content-Type", /json/)
             .expect(200);
         expect(res.body.message).toBe("Successfully created account");
+    }, 10000);
+
+    test("account2 activated successfully", async () => {
+        const token = jwt.sign({email: account2.email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
+
+        await request(app)
+            .get("/api/auth/activateAccount/" + token)
+            .expect("Content-Type", "text/html; charset=utf-8")
+            .expect(200);
+
     }, 10000);
 
     test("register account3 successfully", async () => {
@@ -74,7 +116,27 @@ describe("POST /api/auth/register", () => {
         expect(res.body.message).toBe("Successfully created account");
     }, 10000);
 
-    test("should get duplicate error", async () => {
+    test("account3 activated successfully", async () => {
+        const token = jwt.sign({email: account3.email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
+
+        await request(app)
+            .get("/api/auth/activateAccount/" + token)
+            .expect("Content-Type", "text/html; charset=utf-8")
+            .expect(200);
+
+    }, 10000);
+
+    test("register account4 successfully", async () => {
+        const res = await request(app)
+            .post("/api/auth/register")
+            .send(account4)
+            .expect("Content-Type", /json/)
+            .expect(200);
+        expect(res.body.message).toBe("Successfully created account");
+    }, 10000);
+
+
+    test("duplicate error", async () => {
         const res = await request(app)
             .post("/api/auth/register")
             .send(account1)
@@ -84,7 +146,7 @@ describe("POST /api/auth/register", () => {
 
     }, 10000);
 
-    test("should get missing parameters - email missing", async () => {
+    test("missing parameters - email missing", async () => {
         const {email, ...account} = account1;
         const res = await request(app)
             .post("/api/auth/register")
@@ -95,7 +157,7 @@ describe("POST /api/auth/register", () => {
 
     }, 10000);
 
-    test("should get missing parameters - password missing", async () => {
+    test("missing parameters - password missing", async () => {
         const {password, ...account} = account1;
         const res = await request(app)
             .post("/api/auth/register")
@@ -106,7 +168,7 @@ describe("POST /api/auth/register", () => {
 
     }, 10000);
 
-    test("should get missing parameters - name missing", async () => {
+    test("missing parameters - name missing", async () => {
         const {name, ...account} = account1;
         const res = await request(app)
             .post("/api/auth/register")
@@ -117,7 +179,7 @@ describe("POST /api/auth/register", () => {
 
     }, 10000);
 
-    test("should get missing parameters - phone missing", async () => {
+    test("missing parameters - phone missing", async () => {
         const {phone, ...account} = account1;
         const res = await request(app)
             .post("/api/auth/register")
@@ -132,6 +194,7 @@ describe("POST /api/auth/register", () => {
 
 
 describe("POST /api/auth/login", () => {
+
     test("should return the account1 info ", async () => {
         const res = await request(app)
             .post("/api/auth/login")
@@ -171,6 +234,15 @@ describe("POST /api/auth/login", () => {
         expect(res.body.account).toEqual(
             expect.objectContaining(account)
         );
+    }, 10000);
+
+    test("account4 not activated", async () => {
+        await request(app)
+            .post("/api/auth/login")
+            .send(account4)
+            .expect("Content-Type", /json/)
+            .expect(401);
+
     }, 10000);
 
     test("should return error missing parameter - email missing ", async () => {

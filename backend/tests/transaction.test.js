@@ -2,6 +2,7 @@ const request = require("supertest");
 const app = require("../app");
 const dbConnection = require("../db_connection/db_connection");
 const User = require("../db_models/account.model");
+const jwt = require("jsonwebtoken");
 
 let token_account1;
 let token_account2;
@@ -44,9 +45,20 @@ const money_amount = 50;
 
 beforeAll( async () => {
     await request(app).post("/api/auth/register").send(account1);
+    const token1 = jwt.sign({email: account1.email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
+    await request(app).get("/api/auth/activateAccount/" + token1);
+
     await request(app).post("/api/auth/register").send(account2);
+    const token2 = jwt.sign({email: account2.email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
+    await request(app).get("/api/auth/activateAccount/" + token2);
+
     await request(app).post("/api/auth/register").send(account3);
+    const token3 = jwt.sign({email: account3.email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
+    await request(app).get("/api/auth/activateAccount/" + token3);
+
     await request(app).post("/api/auth/register").send(account4);
+    const token4 = jwt.sign({email: account4.email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
+    await request(app).get("/api/auth/activateAccount/" + token4);
 
     const res1 = await request(app).post("/api/auth/login").send(account1);
     account1 = res1.body.account;
