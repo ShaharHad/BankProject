@@ -7,6 +7,7 @@ This repository contains both the frontend and backend for a bank application. T
 - [Overview](#overview)
 - [Technologies Used](#technologies-used)
 - [Password Security](#password-security)
+- [Account verification](#account-verification)
 - [Authentication](#authentication)
 - [Installation](#installation)
 
@@ -39,6 +40,9 @@ This application allows users to:
 ## Password Security
 
 The backend uses bcrypt to securely hash user passwords before storing them in the database. This ensures that even if the database is compromised, the original passwords cannot be easily retrieved. During authentication, bcrypt is also used to compare the hashed password with the user-provided password.
+
+## Account verification
+The system send verification email to user after successful registration and only when the user click on the verification link in its mail he can login to system
 
 ## Authentication
 

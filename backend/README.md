@@ -252,9 +252,9 @@ Ensure to set up the following environment variables in a `.env` file
 before run the server:
 
 ```env
-PORT=8000
+PORT=your_port
 DB_URI=your_database_connection_string
 TOKEN_SECRET=your_jwt_secret
-SALT=your salt for bcrypt
+SALT=your_salt_for_bcrypt
 ```
 
