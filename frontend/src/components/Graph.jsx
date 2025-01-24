@@ -85,7 +85,8 @@ const Graph = (data) => {
                 borderRadius: 2,
                 margin: 1,
                 minWidth: 650,
-                boxShadow: 10
+                boxShadow: 10,
+                backgroundColor: "rgba(255, 255, 255, 0.8)"
             }}>
                 <Line
                     options={options}
@@ -103,7 +104,7 @@ const Graph = (data) => {
                     borderRadius: 2,
                     margin: 1,
                     minWidth: 650,
-                    boxShadow: 0
+                    boxShadow: 0,
                 }}
             >
                 <Button

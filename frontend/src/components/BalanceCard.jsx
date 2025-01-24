@@ -7,7 +7,7 @@ const BalanceCard = ({balance}) => {
     return (
         <Card sx={{
             width: 1/4,
-            backgroundColor: "transparent",
+            backgroundColor: "rgba(255, 255, 255, 0.5)",
             boxShadow: 5
         }}>
             <CardContent>

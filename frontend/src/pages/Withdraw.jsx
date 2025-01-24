@@ -3,7 +3,6 @@ import {useState} from "react";
 
 import Axios from "../utils/Axios.js";
 import {useGlobal} from "../components/GlobalProvider.jsx";
-import NavBar from "../components/NavBar.jsx";
 import {Box, Button, Container, TextField, Typography} from "@mui/material";
 
 const Withdraw = () => {
@@ -29,6 +28,7 @@ const Withdraw = () => {
                 setIsError(true);
                 if(err.status === 401){ // authentication failed and should be exit to login
                     alert("Navigate to login screen duo to inactive account");
+                    sessionStorage.removeItem("token");
                     navigate("/login");
                 }
                 else if(err.status === 402){
@@ -47,75 +47,72 @@ const Withdraw = () => {
     }
 
     return (
-        <>
-            <NavBar />
-            <Container
-                component="main"
-                maxWidth="false"
+        <Container
+            component="main"
+            maxWidth="false"
+            sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '80vh',
+
+            }}
+        >
+            <Box
                 sx={{
                     display: 'flex',
+                    flexDirection: 'column',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    height: '80vh',
-
+                    padding: 3,
+                    borderRadius: 2,
+                    boxShadow: 3,
+                    width: '20%',
                 }}
             >
-                <Box
-                    sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        padding: 3,
-                        borderRadius: 2,
-                        boxShadow: 3,
-                        width: '20%',
-                    }}
-                >
-                    <Typography variant="h4" gutterBottom>
-                        Withdraw
-                    </Typography>
-                    <form onSubmit={handleWithdraw} style={{ width: '100%' }}>
+                <Typography variant="h4" gutterBottom>
+                    Withdraw
+                </Typography>
+                <form onSubmit={handleWithdraw} style={{ width: '100%' }}>
 
-                        <TextField
-                            label="Amount"
-                            variant="outlined"
-                            fullWidth
-                            required
-                            type="text"
-                            value={amount}
-                            onChange={(e) => setAmount(e.target.value)}
-                            margin="normal"
-                            slotProps={{ htmlInput: { maxLength: 6 , minLength: 1} }}
+                    <TextField
+                        label="Amount"
+                        variant="outlined"
+                        fullWidth
+                        required
+                        type="text"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                        margin="normal"
+                        slotProps={{ htmlInput: { maxLength: 6 , minLength: 1} }}
 
-                        />
+                    />
 
-                        {message && (
-                            <Typography variant="body2"
-                                        color={isError ? "red" : "green"}
-                                        align="center"
-
-                            >
-                                {message}
-                            </Typography>
-                        )}
-
-                        <Button
-                            type="submit"
-                            variant="contained"
-                            color="primary"
-                            fullWidth
-                            sx={{ mt: 2, textTransform: "none", fontSize: "100%"}}
-                            disabled={isLoading}
+                    {message && (
+                        <Typography variant="body2"
+                                    color={isError ? "red" : "green"}
+                                    align="center"
 
                         >
-                            {isLoading ? "Processing..." : "Withdraw"}
-                        </Button>
-                    </form>
+                            {message}
+                        </Typography>
+                    )}
 
-                </Box>
-            </Container>
-        </>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        fullWidth
+                        sx={{ mt: 2, textTransform: "none", fontSize: "100%"}}
+                        disabled={isLoading}
+
+                    >
+                        {isLoading ? "Processing..." : "Withdraw"}
+                    </Button>
+                </form>
+
+            </Box>
+        </Container>
     )
 }
 

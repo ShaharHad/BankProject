@@ -4,7 +4,6 @@ import {Stack, CircularProgress, Box} from '@mui/material';
 
 import {useGlobal} from "../components/GlobalProvider.jsx";
 import {formatTimestamp} from "../utils/TimeOperation.js";
-import NavBar from "../components/NavBar";
 import Graph from "../components/Graph.jsx";
 import Axios from "../utils/Axios.js";
 import BalanceCard from "../components/BalanceCard.jsx";
@@ -31,6 +30,7 @@ const Home = () => {
                 }).catch((err) =>{
                     if(err.status === 401){ // authentication failed and should be exited to login page
                         alert("Navigate to login screen duo to inactive account");
+                        sessionStorage.removeItem("token");
                         navigate("/login");
                     }
                     else{
@@ -45,13 +45,13 @@ const Home = () => {
     }, [transactions]);
 
   return (
-      <div>
-          <NavBar/>
+      <>
           {isLoading ? (
               <CircularProgress />
           ) : (
                   <Box sx={{
-                      backgroundColor: "#90d5ff",
+                      margin: "1vh",
+
                   }}>
                       <h1>Welcome {account.name}</h1>
                       <Stack>
@@ -65,7 +65,7 @@ const Home = () => {
 
                   </Box>
               )}
-      </div>
+      </>
 
   )
 }

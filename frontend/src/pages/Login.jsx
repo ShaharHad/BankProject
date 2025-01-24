@@ -6,12 +6,14 @@ import axios from 'axios';
 import { useGlobal } from "../components/GlobalProvider.jsx";
 
 
+
+
 axios.defaults.withCredentials = true;
 
 const Login = () => {
   const { setBalance, baseUrl } = useGlobal();
 
-  const [email, setEmail] = useState('');
+    const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
@@ -43,6 +45,15 @@ const Login = () => {
   };
 
   return (
+      <div style={{
+          backgroundImage: "url('../assets/bank_image.png')",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat",
+          backgroundPosition: "center",
+          backgroundAttachment: "fixed",
+
+      }}>
+
       <Container
           component="main"
           maxWidth="xs"
@@ -51,6 +62,7 @@ const Login = () => {
               alignItems: 'center',
               justifyContent: 'center',
               height: '80vh',
+
           }}
       >
           <Box
@@ -119,6 +131,8 @@ const Login = () => {
               </Box>
           </Box>
       </Container>
+      </div>
+
   );
 };
 

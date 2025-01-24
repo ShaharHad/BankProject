@@ -44,7 +44,7 @@ const CustomTable = (tableData) => {
 
 
     return (
-      <TableContainer component={Paper} sx={{boxShadow: 10}}>
+      <TableContainer component={Paper} sx={{boxShadow: 10, backgroundColor: "rgba(255, 255, 255, 0.8)"}}>
           <Table sx={{minWidth: 650}} aria-label="customized table">
               <TableHead>
                   <TableRow>
@@ -58,7 +58,6 @@ const CustomTable = (tableData) => {
                       return (
                           <TableRow key={rowIndex} sx={{
                               '&:last-child td, &:last-child th': { border: 0 },
-                              background: "#90d5ff",
                           }}>
                               {columns.map((column) => {
                                 return(
@@ -75,12 +74,10 @@ const CustomTable = (tableData) => {
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: '#90d5ff',
               padding: 3,
               borderRadius: 2,
               minWidth: 650,
               boxShadow: 0
-
           }}>
               <Button
                   onClick={handlePrevious}

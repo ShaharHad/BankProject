@@ -1,13 +1,11 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {Stack, CircularProgress} from '@mui/material';
+import {Stack, CircularProgress, Container} from '@mui/material';
 
 import {useGlobal} from "../components/GlobalProvider.jsx";
 import {formatTimestamp} from "../utils/TimeOperation.js";
-import NavBar from "../components/NavBar";
 import Axios from "../utils/Axios.js";
 import CustomTable from "../components/CustomTable.jsx";
-import BalanceCard from "../components/BalanceCard.jsx";
 
 
 const generateHeaders = (data) =>
@@ -19,7 +17,7 @@ const generateHeaders = (data) =>
 const Transactions = () => {
 
     const navigate = useNavigate();
-    const {balance, baseUrl, transactions, setTransactions, isTransactionsChanged, setIsTransactionsChanged} = useGlobal();
+    const {baseUrl, transactions, setTransactions, isTransactionsChanged, setIsTransactionsChanged} = useGlobal();
     const [isLoading, setIsLoading] = useState(false);
 
 
@@ -38,6 +36,7 @@ const Transactions = () => {
                 }).catch((err) =>{
                     if(err.status === 401){ // authentication failed and should be exit to login
                         alert("Navigate to login screen duo to inactive account");
+                        sessionStorage.removeItem("token");
                         navigate("/login");
                     }
                     console.error("Error: " + err.message);
@@ -53,14 +52,14 @@ const Transactions = () => {
 
 
     return (
-        <div>
-            <NavBar />
+        <Container sx={{
+            margin: "center"
+        }}>
             {
                 isLoading ? (
                     <CircularProgress />
                 ) : (
-                    <Stack>
-                        <BalanceCard balance={balance}/>
+                    <Stack >
                         <h1>Transactions</h1>
                         {transactions !== null && transactions.length > 0 ?
                             <CustomTable columns={columns} data={transactions}></CustomTable>
@@ -69,7 +68,7 @@ const Transactions = () => {
                     </Stack>
                 )
             }
-        </div>
+        </Container>
     )
 }
 

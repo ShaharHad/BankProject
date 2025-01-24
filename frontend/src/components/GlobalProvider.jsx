@@ -31,7 +31,7 @@ export const GlobalProvider = ({ children }) => {
 
     return (
         <GlobalContext.Provider value={{ balance, setBalance, baseUrl,
-            transactions, setTransactions, isTransactionsChanged, setIsTransactionsChanged, account , setNewBalance}}>
+            transactions, setTransactions, isTransactionsChanged, setIsTransactionsChanged, account, setNewBalance}}>
             {children}
         </GlobalContext.Provider>
     );
