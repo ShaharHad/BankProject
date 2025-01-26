@@ -1,3 +1,4 @@
+//appBar component default color is blue (primary)
 import {AppBar, Toolbar, Typography, Button, Icon, Container} from '@mui/material';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import {useNavigate} from "react-router-dom";
