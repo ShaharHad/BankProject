@@ -164,7 +164,7 @@ describe("POST /api/account/transaction/payment", () => {
             .send(send_money)
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("One of parameters is empty");
+        expect(res.body.message).toBe("One of the parameters is empty");
 
     }, 10000);
 
@@ -182,7 +182,7 @@ describe("POST /api/account/transaction/payment", () => {
             .send(send_money)
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("One of parameters is empty");
+        expect(res.body.message).toBe("One of the parameters is empty");
 
     }, 10000);
 
@@ -194,7 +194,7 @@ describe("POST /api/account/transaction/payment", () => {
             .send({})
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("One of parameters is empty");
+        expect(res.body.message).toBe("One of the parameters is empty");
 
     }, 10000);
 

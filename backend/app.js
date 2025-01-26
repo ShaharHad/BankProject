@@ -9,6 +9,7 @@ const authRoutes = require('./routes/AuthRouter');
 const accountRouter = require('./routes/AccountRouter');
 const transactionRoutes = require('./routes/TransactionRouter');
 const authMiddleware = require('./middleware/AuthMiddleware');
+const errorHandler = require('./middleware/ErrorHandelingMiddleware');
 const logger = require('./utils/Logger');
 
 
@@ -47,5 +48,7 @@ app.use('/api/auth', authRoutes);
 app.use(authMiddleware);
 app.use('/api/account/transaction', transactionRoutes);
 app.use('/api/account', accountRouter);
+
+app.use(errorHandler);
 
 module.exports = app;

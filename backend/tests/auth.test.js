@@ -153,7 +153,7 @@ describe("POST /api/auth/register", () => {
             .send(account)
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("One of parameters is empty");
+        expect(res.body.message).toBe("One of the parameters is empty");
 
     }, 10000);
 
@@ -164,7 +164,7 @@ describe("POST /api/auth/register", () => {
             .send(account)
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("One of parameters is empty");
+        expect(res.body.message).toBe("One of the parameters is empty");
 
     }, 10000);
 
@@ -175,7 +175,7 @@ describe("POST /api/auth/register", () => {
             .send(account)
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("One of parameters is empty");
+        expect(res.body.message).toBe("One of the parameters is empty");
 
     }, 10000);
 
@@ -186,7 +186,7 @@ describe("POST /api/auth/register", () => {
             .send(account)
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("One of parameters is empty");
+        expect(res.body.message).toBe("One of the parameters is empty");
 
     }, 10000);
 
@@ -254,7 +254,7 @@ describe("POST /api/auth/login", () => {
             .send(login_data)
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("One of parameters is empty");
+        expect(res.body.message).toBe("One of the parameters is empty");
     }, 10000);
 
     test("should return error missing parameter - password missing ", async () => {
@@ -267,7 +267,7 @@ describe("POST /api/auth/login", () => {
             .expect("Content-Type", /json/)
             .expect(400);
 
-        expect(res.body.message).toBe("One of parameters is empty");
+        expect(res.body.message).toBe("One of the parameters is empty");
     }, 10000);
 
     test("should return error missing parameters - body missing ", async () => {
@@ -277,7 +277,7 @@ describe("POST /api/auth/login", () => {
             .expect("Content-Type", /json/)
             .expect(400);
 
-        expect(res.body.message).toBe("One of parameters is empty");
+        expect(res.body.message).toBe("One of the parameters is empty");
     }, 10000);
 
     test("should return error not found account", async () => {
