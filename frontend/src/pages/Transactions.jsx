@@ -1,6 +1,6 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {Stack, CircularProgress, Container} from '@mui/material';
+import {Stack, CircularProgress, Container, Typography} from '@mui/material';
 
 import {useGlobal} from "../components/GlobalProvider.jsx";
 import {formatTimestamp} from "../utils/TimeOperation.js";
@@ -53,14 +53,16 @@ const Transactions = () => {
 
     return (
         <Container sx={{
-            margin: "center"
+            margin: "center",
         }}>
             {
                 isLoading ? (
                     <CircularProgress />
                 ) : (
                     <Stack >
-                        <h1>Transactions</h1>
+                        <Typography variant="h4" sx={{marginTop: '3rem', marginBottom: '2rem'}}>
+                            Transactions
+                        </Typography>
                         {transactions !== null && transactions.length > 0 ?
                             <CustomTable columns={columns} data={transactions}></CustomTable>
                             : <p>No transactions found</p>

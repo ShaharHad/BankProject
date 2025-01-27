@@ -1,7 +1,10 @@
 import {StrictMode} from 'react'
 import {createRoot} from 'react-dom/client'
 import {createBrowserRouter, RouterProvider} from 'react-router-dom';
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
 
+import {theme} from './components/Theme.jsx'
 import Login from './pages/Login.jsx'
 import Register from './pages/Register.jsx'
 import Home from "./pages/Home.jsx";
@@ -39,8 +42,12 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
         <StrictMode>
-            <GlobalProvider>
-                <RouterProvider router={router}/>
-            </GlobalProvider>
+            <ThemeProvider theme={theme}>
+                <CssBaseline />
+                <GlobalProvider>
+                    <RouterProvider router={router}/>
+                </GlobalProvider>
+            </ThemeProvider>
+
         </StrictMode>,
 )

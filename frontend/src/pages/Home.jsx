@@ -1,6 +1,6 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
-import {Stack, CircularProgress, Box} from '@mui/material';
+import {Stack, CircularProgress, Box, Typography} from '@mui/material';
 
 import {useGlobal} from "../components/GlobalProvider.jsx";
 import {formatTimestamp} from "../utils/TimeOperation.js";
@@ -53,7 +53,9 @@ const Home = () => {
                       margin: "1vh",
 
                   }}>
-                      <h1>Welcome {account.name}</h1>
+                      <Typography variant="h4" sx={{marginTop: '1rem', marginBottom: '2rem'}}>
+                          Welcome {account.name}
+                      </Typography>
                       <Stack>
                           <BalanceCard balance={balance}/>
                           {transactions !== null && transactions.length > 0 ?

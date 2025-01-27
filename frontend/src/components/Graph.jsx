@@ -2,7 +2,7 @@ import {Line} from "react-chartjs-2"
 import {Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend} from "chart.js";
 import {useState} from "react";
 import Box from "@mui/material/Box";
-import {Button, Container} from "@mui/material";
+import {Button, Container, Typography} from "@mui/material";
 
 
 import {formatTimestamp} from "../utils/TimeOperation.js"
@@ -72,9 +72,10 @@ const Graph = (data) => {
             maxWidth="sx"
             disableGutters
         >
-            <div>
-                <h2>{data.title}</h2>
-            </div>
+            <Typography variant="h4" sx={{marginTop: '3rem', marginBottom: '1rem'}}>
+                {data.title}
+            </Typography>
+
             <Box
                 sx={{
                 display: 'flex',

@@ -24,7 +24,6 @@ const Register = () => {
       setMessage("All fields are required!");
       return;
     }
-
       if(!/^\d{10}$/.test(phone)){
           setMessage("phone number have to be 10 digits!");
           return;
@@ -70,7 +69,7 @@ const Register = () => {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-                backgroundColor: 'transparent',
+              backgroundColor: "rgba(255, 255, 255, 0.8)",
               padding: 3,
               borderRadius: 2,
               boxShadow: 3,
