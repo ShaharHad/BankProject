@@ -8,11 +8,7 @@ const mail = require('../utils/Mail');
 const {createError} = require("../utils/CreateError");
 
 exports.register = async(req, res, next) => {
-    // TODO create validation for parameters email and phone
-    if(!req.body.email || !req.body.name || !req.body.password || !req.body.phone){
-        return next(createError(400, "One of the parameters is empty"));
 
-    }
     let account_data = req.body;
     try{
         account_data.password = await bcrypt.hash(account_data.password, Number(process.env.SALT));
@@ -55,10 +51,6 @@ exports.login = async(req, res, next) => {
 
     const email = req.body.email;
     const password = req.body.password;
-
-    if(!req.body.email ||  !req.body.password){
-        return next(createError(400, "One of the parameters is empty"));
-    }
 
      Account.findOne({email: email}).then(async (account) => {
         if(!account){

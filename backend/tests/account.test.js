@@ -15,21 +15,21 @@ let account1 = {
     name: "test1",
     email: "test1@gmail.com",
     password: "test1@gmail.com",
-    phone: "050000000",
+    phone: "0500000000",
 }
 
 let account2 = {
     name: "test2",
     email: "test2@gmail.com",
     password: "test2@gmail.com",
-    phone: "050000000",
+    phone: "0500000000",
 }
 
 let account3 = {
     name: "test3",
     email: "test3@gmail.com",
     password: "test3@gmail.com",
-    phone: "050000000",
+    phone: "0500000000",
 }
 
 
@@ -89,7 +89,7 @@ describe("get /account/balance", () => {
         expect(account.body.balance).toBe(0);
         expect(account.body.name).toBe("test2");
         expect(account.body.email).toBe("test2@gmail.com");
-        expect(account.body.phone).toBe("050000000");
+        expect(account.body.phone).toBe("0500000000");
 
     });
 });

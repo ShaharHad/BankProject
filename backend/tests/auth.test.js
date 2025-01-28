@@ -15,28 +15,28 @@ const account1 = {
     name: "test1",
     email: "test1@gmail.com",
     password: "test1@gmail.com",
-    phone: "050000000",
+    phone: "0500000000",
 }
 
 const account2 = {
     name: "test2",
     email: "test2@gmail.com",
     password: "test2@gmail.com",
-    phone: "050000000",
+    phone: "0500000000",
 }
 
 const account3 = {
     name: "test3",
     email: "test3@gmail.com",
     password: "test3@gmail.com",
-    phone: "050000000",
+    phone: "0500000000",
 }
 
 const account4 = {
     name: "test4",
     email: "test4@gmail.com",
     password: "test4@gmail.com",
-    phone: "050000000",
+    phone: "0500000000",
 }
 
 beforeAll(() => {
@@ -153,7 +153,7 @@ describe("POST /api/auth/register", () => {
             .send(account)
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("One of the parameters is empty");
+        expect(res.body.message).toBe("Please provide valid email");
 
     }, 10000);
 
@@ -164,7 +164,7 @@ describe("POST /api/auth/register", () => {
             .send(account)
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("One of the parameters is empty");
+        expect(res.body.message).toBe("Password is required");
 
     }, 10000);
 
@@ -175,7 +175,7 @@ describe("POST /api/auth/register", () => {
             .send(account)
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("One of the parameters is empty");
+        expect(res.body.message).toBe("Name is required");
 
     }, 10000);
 
@@ -186,7 +186,7 @@ describe("POST /api/auth/register", () => {
             .send(account)
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("One of the parameters is empty");
+        expect(res.body.message).toBe("Phone number should be string");
 
     }, 10000);
 
@@ -254,7 +254,7 @@ describe("POST /api/auth/login", () => {
             .send(login_data)
             .expect("Content-Type", /json/)
             .expect(400);
-        expect(res.body.message).toBe("One of the parameters is empty");
+        expect(res.body.message).toBe("Please provide valid email");
     }, 10000);
 
     test("should return error missing parameter - password missing ", async () => {
@@ -267,7 +267,7 @@ describe("POST /api/auth/login", () => {
             .expect("Content-Type", /json/)
             .expect(400);
 
-        expect(res.body.message).toBe("One of the parameters is empty");
+        expect(res.body.message).toBe("Password is required");
     }, 10000);
 
     test("should return error missing parameters - body missing ", async () => {
@@ -277,7 +277,7 @@ describe("POST /api/auth/login", () => {
             .expect("Content-Type", /json/)
             .expect(400);
 
-        expect(res.body.message).toBe("One of the parameters is empty");
+        expect(res.body.message).toBe("Please provide valid email");
     }, 10000);
 
     test("should return error not found account", async () => {

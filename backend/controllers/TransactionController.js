@@ -6,18 +6,9 @@ const {createError} = require("../utils/CreateError");
 exports.sendPayment = async(req, res, next) => {
 
     const user = req.user;
-
-    if(!req.body.hasOwnProperty("amount") || !req.body.hasOwnProperty("receiver")){
-        return next(createError(400, "One of the parameters is empty"));
-    }
-
     const amount = req.body.amount;
     const receiver = req.body.receiver;
     const sender = user.email;
-
-    if(amount <= 0){
-        return next(createError(402, "Amount should be positive and greater then 0"));
-    }
 
     if(user.balance < amount){
         return next(createError(402, "User dont have enough money"));
@@ -34,14 +25,14 @@ exports.sendPayment = async(req, res, next) => {
             {$inc: {balance: amount}},
             { new: true });
         if(!account_receiver){
-            throw createError(404, "Receiver dont exist")
+            return next(createError(404, "Receiver dont exist"))
         }
 
         const sender_transaction_collection = dbConnection.collection(user._id.toString());
         const receiver_transaction_collection = dbConnection.collection(account_receiver._id.toString());
 
         if(!sender_transaction_collection || !receiver_transaction_collection){
-            throw createError(404, "Receiver or sender transaction dont exist")
+            return next(createError(404, "Receiver or sender transaction dont exist"))
         }
 
         const transaction = {
@@ -54,12 +45,12 @@ exports.sendPayment = async(req, res, next) => {
 
         const res_sender = await sender_transaction_collection.insertOne(transaction);
         if(!res_sender){
-            throw createError(404, "Receiver or sender transaction dont exist")
+            return next(createError(404, "Receiver or sender transaction dont exist"))
         }
 
         const res_receiver = await receiver_transaction_collection.insertOne(transaction);
         if(!res_receiver){
-            throw createError(404, "Receiver or sender transaction dont exist")
+            return next(createError(404, "Receiver or sender transaction dont exist"))
         }
 
         await session.commitTransaction();
@@ -79,17 +70,7 @@ exports.sendPayment = async(req, res, next) => {
 exports.deposit = async(req, res, next) => {
 
     const user = req.user;
-
-    if(!req.body.hasOwnProperty("amount")){
-        return next(createError(400, "Amount should be exist"));
-    }
-
     const amount = req.body.amount;
-
-    if(0 >= amount){
-        return next(createError(402, "Amount should be positive and greater then 0"));
-    }
-
 
     const session = await dbConnection.startSession();
     session.startTransaction();
@@ -101,7 +82,7 @@ exports.deposit = async(req, res, next) => {
         const transaction_collection = dbConnection.collection(user._id.toString());
 
         if(!transaction_collection){
-            throw new Error('Receiver or sender transaction dont exist');
+            return next(createError(402, "Receiver or sender transaction dont exist"));
         }
 
         const transaction = {
@@ -127,19 +108,11 @@ exports.deposit = async(req, res, next) => {
 }
 
 exports.withdraw = async(req, res, next) => {
+
     const user = req.user;
-
-    if(!req.body.hasOwnProperty("amount")){
-        return next(createError(400, "Amount should be exist"));
-    }
-
     const amount = req.body.amount;
 
-    if(0 >= amount){
-        return next(createError(402, "Amount should be positive and greater then 0"));
-    }
-
-    else if(user.balance < amount){
+    if(user.balance < amount){
         return next(createError(402, "User dont have enough money"));
     }
 
@@ -153,7 +126,7 @@ exports.withdraw = async(req, res, next) => {
         const transaction_collection = dbConnection.collection(user._id.toString());
 
         if(!transaction_collection){
-            throw new Error('Account transaction dont exist');
+            return next(createError(404, "Account transaction dont exist"));
         }
 
         const transaction = {
