@@ -44,10 +44,10 @@ app.use(cookieParser());
 app.use(middlewareMorgan);
 
 
-app.use('/api/auth', authRoutes);
+app.use('/api/v1/auth', authRoutes);
 app.use(authMiddleware);
-app.use('/api/account/transaction', transactionRoutes);
-app.use('/api/account', accountRouter);
+app.use('/api/v1/account/transaction', transactionRoutes);
+app.use('/api/v1/account', accountRouter);
 
 app.use(errorHandler);
 
