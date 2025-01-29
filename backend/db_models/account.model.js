@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const AccountSchema = mongoose.Schema({
         email: {
             type: String,
-            required: [true, "Please enter enter email"], // second item in array is custome massage !!!
+            required: [true, "Please enter email"], // second item in array is custome massage !!!
             unique: true
         },
         password:{
             type: String,
-            required: true
+            required: [true, "Please enter password"]
         },
 
         name: {

@@ -4,9 +4,10 @@ import {Stack, CircularProgress, Box, Typography} from '@mui/material';
 
 import {useGlobal} from "../components/GlobalProvider.jsx";
 import {formatTimestamp} from "../utils/TimeOperation.js";
-import Graph from "../components/Graph.jsx";
+import LineChart from "../components/charts/LineChart.jsx";
 import Axios from "../utils/Axios.js";
 import BalanceCard from "../components/BalanceCard.jsx";
+import PieChart from "../components/charts/PieChart.jsx";
 
 const Home = () => {
 
@@ -53,16 +54,29 @@ const Home = () => {
                       margin: "1vh",
 
                   }}>
-                      <Typography variant="h4" sx={{marginTop: '1rem', marginBottom: '2rem'}}>
+                      <Typography variant="h4" sx={{marginTop: '0.5rem', marginBottom: '1rem'}}>
                           Welcome {account.name}
                       </Typography>
-                      <Stack>
-                          <BalanceCard balance={balance}/>
-                          {transactions !== null && transactions.length > 0 ?
-                              <Graph transactions={transactions} email={account.email} title={"7 last days summary transactions"}/>
-                              : <p>No transactions found</p>
-                          }
+                      <BalanceCard balance={balance}/>
+                      <Stack direction="row">
+                          <Box>
+                              {transactions !== null && transactions.length > 0 ?
+                                  <PieChart transactions={transactions} email={account.email}/>
+                                  : <p>No transactions found</p>
+                              }
+                          </Box>
                       </Stack>
+
+
+                        <Box>
+                            {transactions !== null && transactions.length > 0 ?
+                                <LineChart  transactions={transactions} email={account.email} title={"7 last days summary transactions"}/>
+                                : <p>No transactions found</p>
+                            }
+                        </Box>
+
+
+
                       {message && <p style={{color: "red"}}>{message}</p>}
 
                   </Box>

@@ -39,7 +39,7 @@ exports.sendActivationLink = async(email) => {
        });
 
        const token = jwt.sign({email: email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
-       const activationLink = `${process.env.APP_URL}/api/auth/activateAccount/${token}`;
+       const activationLink = `${process.env.APP_URL}/api/v1/auth/activateAccount/${token}`;
 
        transporter.sendMail({
            from: process.env.EMAIL_SERVICE,

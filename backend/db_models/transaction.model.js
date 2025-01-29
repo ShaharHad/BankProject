@@ -1,21 +1,17 @@
 const mongoose = require('mongoose');
 
 const TransactionSchema = mongoose.Schema({
-        payment: {
+        amount: {
             type: Number,
-            required: [true, "Please enter amount"], // second item in array is custome massage !!!
+            required: [true, "Please enter amount"], // second item in array is custom massage !!!
         },
         receiver:{
             type: String,
-            required: true
-        },
-        sender:{
-            type: String,
-            required: true
+            required: [true, "Please enter receiver"]
         },
         type:{
             type: String,
-            required: true
+            required: [true, "Please enter receiver"]
         }
     },
     {

@@ -5,13 +5,13 @@ import Box from "@mui/material/Box";
 import {Button, Container, Typography} from "@mui/material";
 
 
-import {formatTimestamp} from "../utils/TimeOperation.js"
-import {useGlobal} from "./GlobalProvider.jsx";
+import {formatTimestamp} from "../../utils/TimeOperation.js"
+import {useGlobal} from "../GlobalProvider.jsx";
 
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend); // make the chart to render
 
-const Graph = (data) => {
+const lineChart = (data) => {
 
     const {balance} = useGlobal();
 
@@ -72,7 +72,7 @@ const Graph = (data) => {
             maxWidth="sx"
             disableGutters
         >
-            <Typography variant="h4" sx={{marginTop: '3rem', marginBottom: '1rem'}}>
+            <Typography variant="h4" sx={{marginTop: '2rem', marginBottom: '1rem'}}>
                 {data.title}
             </Typography>
 
@@ -133,4 +133,4 @@ const Graph = (data) => {
     );
 }
 
-export default Graph;
+export default lineChart;
