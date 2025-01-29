@@ -4,6 +4,8 @@ const dbConnection = require("../db_connection/db_connection");
 const User = require("../db_models/account.model");
 const jwt = require("jsonwebtoken");
 
+const base_api = "/api/v1"
+
 let token_account1;
 let token_account2;
 let token_account3;
@@ -35,29 +37,29 @@ let account3 = {
 
 
 beforeAll( async () => {
-    await request(app).post("/api/auth/register").send(account1);
+    await request(app).post(base_api + "/auth/register").send(account1);
     const token1 = jwt.sign({email: account1.email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
-    await request(app).get("/api/auth/activateAccount/" + token1);
+    await request(app).get(base_api + "/auth/activateAccount/" + token1);
 
-    await request(app).post("/api/auth/register").send(account2);
+    await request(app).post(base_api + "/auth/register").send(account2);
     const token2 = jwt.sign({email: account2.email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
-    await request(app).get("/api/auth/activateAccount/" + token2);
+    await request(app).get(base_api + "/auth/activateAccount/" + token2);
 
-    await request(app).post("/api/auth/register").send(account3);
+    await request(app).post(base_api + "/auth/register").send(account3);
     const token3 = jwt.sign({email: account3.email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
-    await request(app).get("/api/auth/activateAccount/" + token3);
+    await request(app).get(base_api + "/auth/activateAccount/" + token3);
 
-    const res1 = await request(app).post("/api/auth/login").send(account1);
+    const res1 = await request(app).post(base_api + "/auth/login").send(account1);
     account1 = res1.body.account;
     transactionCollection1 = dbConnection.collection(account1._id.toString());
     token_account1 = res1.body.token;
 
-    const res2 = await request(app).post("/api/auth/login").send(account2);
+    const res2 = await request(app).post(base_api + "/auth/login").send(account2);
     account2 = res2.body.account;
     transactionCollection2 = dbConnection.collection(account2._id.toString());
     token_account2 = res2.body.token;
 
-    const res3 = await request(app).post("/api/auth/login").send(account3);
+    const res3 = await request(app).post(base_api + "/auth/login").send(account3);
     account3 = res3.body.account;
     transactionCollection3 = dbConnection.collection(account3._id.toString());
     token_account3 = res3.body.token;
@@ -81,7 +83,7 @@ describe("get /account/balance", () => {
     test("success to get balance", async () => {
 
         const account  = await request(app)
-            .get("/api/account/")
+            .get(base_api + "/account/")
             .set("Authorization", `Bearer ${token_account2}`)
             .expect("Content-Type", /json/)
             .expect(200);
@@ -95,7 +97,7 @@ describe("get /account/balance", () => {
 });
 
 
-describe("get /api/user/balance", () => {
+describe("get /api/v1/user/balance", () => {
     test("success to get balance", async () => {
         const send_money = {
             amount: 50,
@@ -103,19 +105,19 @@ describe("get /api/user/balance", () => {
         }
 
         await request(app)
-            .post("/api/account/transaction/deposit")
+            .post(base_api + "/account/transaction/deposit")
             .set("Authorization", `Bearer ${token_account1}`)
             .send({amount: 500});
 
         await request(app)
-            .post("/api/account/transaction/payment")
+            .post(base_api + "/account/transaction/payment")
             .set("Authorization", `Bearer ${token_account1}`)
             .send(send_money)
             .expect("Content-Type", /json/)
             .expect(200);
 
         const sender_res  = await request(app)
-            .get("/api/account/balance")
+            .get(base_api + "/account/balance")
             .set("Authorization", `Bearer ${token_account1}`)
             .expect("Content-Type", /json/)
             .expect(200);
@@ -123,7 +125,7 @@ describe("get /api/user/balance", () => {
         expect(sender_res.body.balance).toBe(450);
 
         const receiver_res  = await request(app)
-            .get("/api/account/balance")
+            .get(base_api + "/account/balance")
             .set("Authorization", `Bearer ${token_account2}`)
             .expect("Content-Type", /json/)
             .expect(200);

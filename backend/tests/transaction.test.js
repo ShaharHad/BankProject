@@ -4,6 +4,8 @@ const dbConnection = require("../db_connection/db_connection");
 const User = require("../db_models/account.model");
 const jwt = require("jsonwebtoken");
 
+const baseApi = "/api/v1"
+
 let token_account1;
 let token_account2;
 let token_account3;
@@ -44,38 +46,38 @@ let account4 = {
 const money_amount = 50;
 
 beforeAll( async () => {
-    await request(app).post("/api/auth/register").send(account1);
+    await request(app).post(baseApi + "/auth/register").send(account1);
     const token1 = jwt.sign({email: account1.email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
-    await request(app).get("/api/auth/activateAccount/" + token1);
+    await request(app).get(baseApi + "/auth/activateAccount/" + token1);
 
-    await request(app).post("/api/auth/register").send(account2);
+    await request(app).post(baseApi + "/auth/register").send(account2);
     const token2 = jwt.sign({email: account2.email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
-    await request(app).get("/api/auth/activateAccount/" + token2);
+    await request(app).get(baseApi + "/auth/activateAccount/" + token2);
 
-    await request(app).post("/api/auth/register").send(account3);
+    await request(app).post(baseApi + "/auth/register").send(account3);
     const token3 = jwt.sign({email: account3.email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
-    await request(app).get("/api/auth/activateAccount/" + token3);
+    await request(app).get(baseApi + "/auth/activateAccount/" + token3);
 
-    await request(app).post("/api/auth/register").send(account4);
+    await request(app).post(baseApi + "/auth/register").send(account4);
     const token4 = jwt.sign({email: account4.email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
-    await request(app).get("/api/auth/activateAccount/" + token4);
+    await request(app).get(baseApi + "/auth/activateAccount/" + token4);
 
-    const res1 = await request(app).post("/api/auth/login").send(account1);
+    const res1 = await request(app).post(baseApi + "/auth/login").send(account1);
     account1 = res1.body.account;
     transactionCollection1 = dbConnection.collection(account1._id.toString());
     token_account1 = res1.body.token;
 
-    const res2 = await request(app).post("/api/auth/login").send(account2);
+    const res2 = await request(app).post(baseApi + "/auth/login").send(account2);
     account2 = res2.body.account;
     transactionCollection2 = dbConnection.collection(account2._id.toString());
     token_account2 = res2.body.token;
 
-    const res3 = await request(app).post("/api/auth/login").send(account3);
+    const res3 = await request(app).post(baseApi + "/auth/login").send(account3);
     account3 = res3.body.account;
     transactionCollection3 = dbConnection.collection(account3._id.toString());
     token_account3 = res3.body.token;
 
-    const res4 = await request(app).post("/api/auth/login").send(account4);
+    const res4 = await request(app).post(baseApi + "/auth/login").send(account4);
     account4 = res4.body.account;
     transactionCollection4 = dbConnection.collection(account4._id.toString());
     token_account4 = res4.body.token;
@@ -98,7 +100,7 @@ afterAll(async() => {
     }
 });
 
-describe("POST /api/account/transaction/payment", () => {
+describe("POST /api/v1/account/transaction/payment", () => {
 
     test("send payment from account1 to account2 successfully", async () => {
         const send_money = {
@@ -106,7 +108,7 @@ describe("POST /api/account/transaction/payment", () => {
             receiver: "test2@gmail.com",
         }
 
-        const receiver_amount_before = await request(app).post("/api/auth/login").send({
+        const receiver_amount_before = await request(app).post(baseApi + "/auth/login").send({
             email: "test2@gmail.com",
             password: "test2@gmail.com",
         });
@@ -114,20 +116,20 @@ describe("POST /api/account/transaction/payment", () => {
         const deposit_money = 500;
 
         await request(app)
-            .post("/api/account/transaction/deposit")
+            .post(baseApi + "/account/transaction/deposit")
             .set("Authorization", `Bearer ${token_account1}`)
             .send({amount: deposit_money})
 
 
         const res = await request(app)
-            .post("/api/account/transaction/payment")
+            .post(baseApi + "/account/transaction/payment")
             .set("Authorization", `Bearer ${token_account1}`)
             .send(send_money)
             .expect("Content-Type", /json/)
             .expect(200);
         expect(res.body.current_balance).toBe(deposit_money - money_amount);
 
-        const receiver_amount_after = await request(app).post("/api/auth/login").send({
+        const receiver_amount_after = await request(app).post(baseApi + "/auth/login").send({
             email: "test2@gmail.com",
             password: "test2@gmail.com",
         });
@@ -142,7 +144,7 @@ describe("POST /api/account/transaction/payment", () => {
         }
 
         const res = await request(app)
-            .post("/api/account/transaction/payment")
+            .post(baseApi + "/account/transaction/payment")
             .set("Authorization", `Bearer ${token_account1}`)
             .send(send_money)
             .expect("Content-Type", /json/)
@@ -158,7 +160,7 @@ describe("POST /api/account/transaction/payment", () => {
         }
 
         const res = await request(app)
-            .post("/api/account/transaction/payment")
+            .post(baseApi + "/account/transaction/payment")
             .set("Authorization", `Bearer ${token_account1}`)
             .send(send_money)
             .expect("Content-Type", /json/)
@@ -175,7 +177,7 @@ describe("POST /api/account/transaction/payment", () => {
         }
 
         const res = await request(app)
-            .post("/api/account/transaction/payment")
+            .post(baseApi + "/account/transaction/payment")
             .set("Authorization", `Bearer ${token_account1}`)
             .send(send_money)
             .expect("Content-Type", /json/)
@@ -187,7 +189,7 @@ describe("POST /api/account/transaction/payment", () => {
     test("should get missing parameters - all missing", async () => {
 
         const res = await request(app)
-            .post("/api/account/transaction/payment")
+            .post(baseApi + "/account/transaction/payment")
             .set("Authorization", `Bearer ${token_account1}`)
             .send({})
             .expect("Content-Type", /json/)
@@ -203,7 +205,7 @@ describe("POST /api/account/transaction/payment", () => {
         }
 
         const res = await request(app)
-            .post("/api/account/transaction/payment")
+            .post(baseApi + "/account/transaction/payment")
             .set("Authorization", `Bearer ${token_account1}`)
             .send(send_money)
             .expect("Content-Type", /json/)
@@ -219,7 +221,7 @@ describe("POST /api/account/transaction/payment", () => {
         }
 
         const res = await request(app)
-            .post("/api/account/transaction/payment")
+            .post(baseApi + "/account/transaction/payment")
             .set("Authorization", `Bearer ${token_account1}`)
             .send(send_money)
             .expect("Content-Type", /json/)
@@ -235,7 +237,7 @@ describe("POST /api/account/transaction/deposit", () => {
 
     test("success deposit", async () => {
 
-        const account2_before = await request(app).post("/api/auth/login").send({
+        const account2_before = await request(app).post(baseApi + "/auth/login").send({
             email: account2.email,
             password: "test2@gmail.com",
         });
@@ -245,7 +247,7 @@ describe("POST /api/account/transaction/deposit", () => {
         }
 
         const res = await request(app)
-            .post("/api/account/transaction/deposit")
+            .post(baseApi + "/account/transaction/deposit")
             .set("Authorization", `Bearer ${token_account2}`)
             .send(payment)
             .expect("Content-Type", /json/)
@@ -258,7 +260,7 @@ describe("POST /api/account/transaction/deposit", () => {
     test("should get missing parameters - payment missing", async () => {
 
         const res = await request(app)
-            .post("/api/account/transaction/deposit")
+            .post(baseApi + "/account/transaction/deposit")
             .set("Authorization", `Bearer ${token_account2}`)
             .send({})
             .expect("Content-Type", /json/)
@@ -274,7 +276,7 @@ describe("POST /api/account/transaction/deposit", () => {
         }
 
         const res = await request(app)
-            .post("/api/account/transaction/deposit")
+            .post(baseApi + "/account/transaction/deposit")
             .set("Authorization", `Bearer ${token_account3}`)
             .send(payment)
             .expect("Content-Type", /json/)
@@ -290,7 +292,7 @@ describe("POST /api/account/transaction/deposit", () => {
         }
 
         const res = await request(app)
-            .post("/api/account/transaction/deposit")
+            .post(baseApi + "/account/transaction/deposit")
             .set("Authorization", `Bearer ${token_account3}`)
             .send(payment)
             .expect("Content-Type", /json/)
@@ -301,16 +303,16 @@ describe("POST /api/account/transaction/deposit", () => {
 
 });
 
-describe("POST /api/account/transaction/withdraw", () => {
+describe("POST /api/v1/account/transaction/withdraw", () => {
 
     test("success withdraw", async () => {
 
         await request(app)
-            .post("/api/account/transaction/deposit")
+            .post(baseApi + "/account/transaction/deposit")
             .set("Authorization", `Bearer ${token_account3}`)
             .send({amount: 500})
 
-        const account3_before = await request(app).post("/api/auth/login").send({
+        const account3_before = await request(app).post(baseApi + "/auth/login").send({
             email: account3.email,
             password: "test3@gmail.com",
         });
@@ -320,7 +322,7 @@ describe("POST /api/account/transaction/withdraw", () => {
         }
 
         const res = await request(app)
-            .post("/api/account/transaction/withdraw")
+            .post(baseApi + "/account/transaction/withdraw")
             .set("Authorization", `Bearer ${token_account3}`)
             .send(payment)
             .expect("Content-Type", /json/)
@@ -332,7 +334,7 @@ describe("POST /api/account/transaction/withdraw", () => {
     test("should get missing parameters - payment missing", async () => {
 
         const res = await request(app)
-            .post("/api/account/transaction/withdraw")
+            .post(baseApi + "/account/transaction/withdraw")
             .set("Authorization", `Bearer ${token_account3}`)
             .send({})
             .expect("Content-Type", /json/)
@@ -348,7 +350,7 @@ describe("POST /api/account/transaction/withdraw", () => {
         }
 
         const res = await request(app)
-            .post("/api/account/transaction/withdraw")
+            .post(baseApi + "/account/transaction/withdraw")
             .set("Authorization", `Bearer ${token_account3}`)
             .send(payment)
             .expect("Content-Type", /json/)
@@ -364,7 +366,7 @@ describe("POST /api/account/transaction/withdraw", () => {
         }
 
         const res = await request(app)
-            .post("/api/account/transaction/withdraw")
+            .post(baseApi + "/account/transaction/withdraw")
             .set("Authorization", `Bearer ${token_account3}`)
             .send(payment)
             .expect("Content-Type", /json/)
@@ -380,7 +382,7 @@ describe("POST /api/account/transaction/withdraw", () => {
         }
 
         const res = await request(app)
-            .post("/api/account/transaction/withdraw")
+            .post(baseApi + "/account/transaction/withdraw")
             .set("Authorization", `Bearer ${token_account3}`)
             .send(payment)
             .expect("Content-Type", /json/)
@@ -394,7 +396,7 @@ describe("GET /account/transaction/transactions", () => {
     test("success get all account transactions", async () => {
 
         await request(app)
-            .post("/api/account/transaction/deposit")
+            .post(baseApi + "/account/transaction/deposit")
             .set("Authorization", `Bearer ${token_account1}`)
             .send({amount: 500})
 
@@ -405,19 +407,19 @@ describe("GET /account/transaction/transactions", () => {
         }
 
         await request(app)
-            .post("/api/account/transaction/payment")
+            .post(baseApi + "/account/transaction/payment")
             .set("Authorization", `Bearer ${token_account1}`)
             .send(send_money)
 
         await request(app)
-            .post("/api/account/transaction/payment")
+            .post(baseApi + "/account/transaction/payment")
             .set("Authorization", `Bearer ${token_account1}`)
             .send(send_money)
 
         send_money.amount = 100;
 
         await request(app)
-            .post("/api/account/transaction/payment")
+            .post(baseApi + "/account/transaction/payment")
             .set("Authorization", `Bearer ${token_account1}`)
             .send(send_money)
 
@@ -428,13 +430,13 @@ describe("GET /account/transaction/transactions", () => {
         }
 
         await request(app)
-            .post("/api/account/transaction/payment")
+            .post(baseApi + "/account/transaction/payment")
             .set("Authorization", `Bearer ${token_account4}`)
             .send(send_money)
 
 
         const res = await request(app)
-            .get("/api/account/transaction/")
+            .get(baseApi + "/account/transaction/")
             .set("Authorization", `Bearer ${token_account4}`)
             .expect("Content-Type", /json/)
             .expect(200);
