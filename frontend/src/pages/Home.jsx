@@ -7,8 +7,8 @@ import {formatTimestamp} from "../utils/TimeOperation.js";
 import LineChart from "../components/charts/LineChart.jsx";
 import Axios from "../utils/Axios.js";
 import BalanceCard from "../components/BalanceCard.jsx";
-import PieChart from "../components/charts/PieChart.jsx";
 import BarChart from "../components/charts/BarChart.jsx";
+import DoughnutChart from "../components/charts/DoughnutChart.jsx";
 
 const Home = () => {
 
@@ -16,6 +16,7 @@ const Home = () => {
     const {account, balance, baseUrl, isTransactionsChanged, setTransactions, transactions}  = useGlobal();
     const [message, setMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+
 
     useEffect(() => {
         const fetchTransactions= async () => {
@@ -58,30 +59,33 @@ const Home = () => {
 
                   }}>
                       <Typography variant="h4" sx={{marginTop: '0.5rem', marginBottom: '1rem'}}>
-                          Welcome {account.name}
+                          Welcome {account.current.name}
                       </Typography>
                       <BalanceCard balance={balance}/>
-                      <Stack direction="row">
+                      <Stack direction="row" sx={{
+                          height: "20rem",
+                      }}>
                           <Box sx={{
-                              width: "20rem",
+                              width: "40rem",
                               backgroundColor: "rgba(255, 255, 255, 0.8)",
                               marginTop: 2,
-                              paddingBottom: 1
+                              paddingBottom: 1,
+                              paddingRight: 5,
                           }}>
                               {transactions !== null && transactions.length > 0 ?
-                                  <PieChart transactions={transactions} email={account.email}/>
+                                  <DoughnutChart transactions={transactions} email={account.current.email}/>
                                   : <p>No transactions found</p>
                               }
                           </Box>
                           <Box sx={{
-                              width: "35rem",
+                              width: "40rem",
                               backgroundColor: "rgba(255, 255, 255, 0.8)",
                               marginTop: 2,
                               paddingBottom: 1,
                               marginLeft: "2rem",
                           }}>
                           {transactions !== null && transactions.length > 0 ?
-                              <BarChart transactions={transactions} email={account.email}/>
+                              <BarChart transactions={transactions} email={account.current.email}/>
                               : <p>No transactions found</p>
                           }
                       </Box>
@@ -90,7 +94,7 @@ const Home = () => {
 
                         <Box>
                             {transactions !== null && transactions.length > 0 ?
-                                <LineChart  transactions={transactions} email={account.email} title={"7 last days summary transactions"}/>
+                                <LineChart  transactions={transactions} email={account.current.email} title={"7 last days summary transactions"}/>
                                 : <p>No transactions found</p>
                             }
                         </Box>
