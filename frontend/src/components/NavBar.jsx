@@ -3,10 +3,15 @@ import {AppBar, Toolbar, Typography, Button, Icon, Container} from '@mui/materia
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import {useNavigate} from "react-router-dom";
 
+import {useGlobal} from "./GlobalProvider.jsx";
+
 
 const NavBar = () => {
 
   const navigate = useNavigate();
+  const { isTransactionsChanged }  = useGlobal();
+
+
 
   const token = sessionStorage.getItem('token');
 
@@ -19,7 +24,7 @@ const NavBar = () => {
             >
               <AccountBalanceIcon/>
             </Icon>
-            <Typography variant="h5" sx={{flexGrow: 1}}>
+            <Typography variant="h5" sx={{flexGrow: 1, color: 'inherit'}}>
               Shahar's bank
               <Typography sx={{flexGrow: 1}}>
                 Because your money worth more
@@ -54,8 +59,13 @@ const NavBar = () => {
             Transactions
           </Button>
           <Button color="inherit" onClick={() => {
-            navigate('/login');
+
             sessionStorage.removeItem("token");
+            sessionStorage.removeItem("account");
+            sessionStorage.removeItem("balance");
+            navigate('/login');
+            isTransactionsChanged.current = true;
+
           }}>Logout</Button>
                 </>
               )

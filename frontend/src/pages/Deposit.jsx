@@ -9,7 +9,7 @@ import {Box, Button, Container, TextField, Typography} from "@mui/material";
 const Deposit = () => {
 
     const navigate = useNavigate();
-    const {baseUrl, setIsTransactionsChanged, setNewBalance} = useGlobal();
+    const {baseUrl, isTransactionsChanged, setNewBalance} = useGlobal();
     const [amount, setAmount] = useState(0);
     const [message, setMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -26,12 +26,14 @@ const Deposit = () => {
                 setNewBalance(response.data.current_balance);
                 setIsError(false);
                 setMessage("Deposit success");
-                setIsTransactionsChanged(true);
+                isTransactionsChanged.current = true;
         }).catch((err) =>{
             setIsError(true);
             if(err.status === 401){ // authentication failed and should be exited to login page
                 alert("Navigate to login screen duo to inactive account");
                 sessionStorage.removeItem("token");
+                sessionStorage.removeItem("account");
+                sessionStorage.removeItem("balance");
                 navigate("/login");
             }
             else if(err.status === 402){ // authentication failed and should be exit to login

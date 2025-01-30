@@ -1,14 +1,14 @@
 import {Navigate} from 'react-router-dom';
 
 
-const ProtectedRoute = ({children}) => {
+const ProtectedRoute = (components) => {
 
 
     if(sessionStorage.getItem("token") === null){
         return <Navigate to="/login" />;
     }
 
-    return children;
+    return components.children;
 }
 
 export default ProtectedRoute;

@@ -2,7 +2,9 @@ import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import {Typography} from "@mui/material";
 
-const BalanceCard = ({balance}) => {
+const BalanceCard = (data) => {
+
+    const balance = data.balance;
 
     return (
         <Card sx={{
@@ -12,7 +14,7 @@ const BalanceCard = ({balance}) => {
         }}>
             <CardContent>
                 <Typography gutterBottom sx={{color: "#1976d2", fontSize: 20 }}>
-                    Balance
+                    Current Balance
                 </Typography>
                 <Typography gutterBottom sx={{ fontSize: 16 }}>
                     {balance}

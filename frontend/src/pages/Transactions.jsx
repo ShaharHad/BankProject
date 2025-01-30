@@ -17,7 +17,7 @@ const generateHeaders = (data) =>
 const Transactions = () => {
 
     const navigate = useNavigate();
-    const {baseUrl, transactions, setTransactions, isTransactionsChanged, setIsTransactionsChanged} = useGlobal();
+    const {baseUrl, transactions, setTransactions, isTransactionsChanged } = useGlobal();
     const [isLoading, setIsLoading] = useState(false);
 
 
@@ -32,18 +32,20 @@ const Transactions = () => {
                         transaction.timestamp = formatTimestamp(transaction.timestamp);
                         return transaction;
                     }));
-                    setIsTransactionsChanged(false);
+                    isTransactionsChanged.current = false;
                 }).catch((err) =>{
                     if(err.status === 401){ // authentication failed and should be exit to login
                         alert("Navigate to login screen duo to inactive account");
                         sessionStorage.removeItem("token");
+                        sessionStorage.removeItem("account");
+                        sessionStorage.removeItem("balance");
                         navigate("/login");
                     }
                     console.error("Error: " + err.message);
                 });
             setIsLoading(false);
         }
-        if(isTransactionsChanged){
+        if(isTransactionsChanged.current){
             fetchTransactions();
         }
     }, [transactions]);

@@ -1,19 +1,20 @@
-import {createContext, useState, useContext, useEffect} from "react";
+import {createContext, useState, useContext, useEffect, useRef} from "react";
 
 // Create the Context
 const GlobalContext = createContext(Number);
 
 // Create a Provider Component
-export const GlobalProvider = ({ children }) => {
+export const GlobalProvider = (components) => {
+    const children = components.children;
     const [balance, setBalance] = useState(0);
     const [transactions, setTransactions] = useState([]);
-    const [isTransactionsChanged, setIsTransactionsChanged] = useState(true);
+    const isTransactionsChanged = useRef(true);
     const [account, setAccount] = useState({});
     const baseUrl = import.meta.env.VITE_BASE_URL;
 
     const setNewBalance = (newBalance) => {
-        setBalance(newBalance);
         sessionStorage.setItem("balance", newBalance);
+        setBalance(newBalance);
     }
 
     useEffect(() => {
@@ -31,7 +32,7 @@ export const GlobalProvider = ({ children }) => {
 
     return (
         <GlobalContext.Provider value={{ balance, setBalance, baseUrl,
-            transactions, setTransactions, isTransactionsChanged, setIsTransactionsChanged, account, setNewBalance}}>
+            transactions, setTransactions, isTransactionsChanged, account, setNewBalance}}>
             {children}
         </GlobalContext.Provider>
     );

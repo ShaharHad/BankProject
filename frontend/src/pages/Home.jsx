@@ -8,11 +8,12 @@ import LineChart from "../components/charts/LineChart.jsx";
 import Axios from "../utils/Axios.js";
 import BalanceCard from "../components/BalanceCard.jsx";
 import PieChart from "../components/charts/PieChart.jsx";
+import BarChart from "../components/charts/BarChart.jsx";
 
 const Home = () => {
 
     const navigate = useNavigate();
-    const {account, balance, baseUrl, setIsTransactionsChanged, isTransactionsChanged, setTransactions, transactions}  = useGlobal();
+    const {account, balance, baseUrl, isTransactionsChanged, setTransactions, transactions}  = useGlobal();
     const [message, setMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
@@ -27,11 +28,13 @@ const Home = () => {
                         return transaction;
                     }));
 
-                    setIsTransactionsChanged(false);
+                    isTransactionsChanged.current = false;
                 }).catch((err) =>{
                     if(err.status === 401){ // authentication failed and should be exited to login page
                         alert("Navigate to login screen duo to inactive account");
                         sessionStorage.removeItem("token");
+                        sessionStorage.removeItem("account");
+                        sessionStorage.removeItem("balance");
                         navigate("/login");
                     }
                     else{
@@ -40,7 +43,7 @@ const Home = () => {
                 });
             setIsLoading(false);
         }
-        if(isTransactionsChanged){
+        if(isTransactionsChanged.current){
             fetchTransactions();
         }
     }, [transactions]);
@@ -59,14 +62,31 @@ const Home = () => {
                       </Typography>
                       <BalanceCard balance={balance}/>
                       <Stack direction="row">
-                          <Box>
+                          <Box sx={{
+                              width: "20rem",
+                              backgroundColor: "rgba(255, 255, 255, 0.8)",
+                              marginTop: 2,
+                              paddingBottom: 1
+                          }}>
                               {transactions !== null && transactions.length > 0 ?
                                   <PieChart transactions={transactions} email={account.email}/>
                                   : <p>No transactions found</p>
                               }
                           </Box>
-                      </Stack>
+                          <Box sx={{
+                              width: "35rem",
+                              backgroundColor: "rgba(255, 255, 255, 0.8)",
+                              marginTop: 2,
+                              paddingBottom: 1,
+                              marginLeft: "2rem",
+                          }}>
+                          {transactions !== null && transactions.length > 0 ?
+                              <BarChart transactions={transactions} email={account.email}/>
+                              : <p>No transactions found</p>
+                          }
+                      </Box>
 
+                      </Stack>
 
                         <Box>
                             {transactions !== null && transactions.length > 0 ?

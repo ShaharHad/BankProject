@@ -8,7 +8,8 @@ import {Box, Button, Container, TextField, Typography} from "@mui/material";
 const Transfer = () => {
 
     const navigate = useNavigate();
-    const {setNewBalance, baseUrl, setIsTransactionsChanged} = useGlobal();
+    const {setNewBalance, baseUrl, isTransactionsChanged} = useGlobal();
+
     const [receiver, setReceiver] = useState("");
     const [amount, setAmount] = useState("");
     const [message, setMessage] = useState("");
@@ -25,12 +26,14 @@ const Transfer = () => {
                 setNewBalance(response.data.current_balance);
                 setIsError(false);
                 setMessage("Payment transfer success");
-            setIsTransactionsChanged(true);
+            isTransactionsChanged.current = true;
             }).catch((err) =>{
                 setIsError(true);
                 if(err.status === 401){ // authentication failed and should be exit to login
-                    alert("Navigate to login screen duo to inactive account");
                     sessionStorage.removeItem("token");
+                    sessionStorage.removeItem("account");
+                    sessionStorage.removeItem("balance");
+                    alert("Navigate to login screen duo to inactive account");
                     navigate("/login");
                 }
                 else if(err.status === 402) {
