@@ -23,7 +23,7 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 
 const CustomTable = (tableData) => {
-
+    const dollarSign = "$"
     const columns = tableData.columns;
     const data = tableData.data;
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -44,7 +44,7 @@ const CustomTable = (tableData) => {
 
 
     return (
-      <TableContainer component={Paper} sx={{boxShadow: 10, backgroundColor: "rgba(255, 255, 255, 0.8)"}}>
+      <TableContainer component={Paper} sx={{boxShadow: 10, backgroundColor: "rgba(242,249,255, 0.8)"}}>
           <Table sx={{minWidth: 650}} aria-label="customized table">
               <TableHead>
                   <TableRow>
@@ -60,8 +60,12 @@ const CustomTable = (tableData) => {
                               '&:last-child td, &:last-child th': { border: 0 },
                           }}>
                               {columns.map((column) => {
+
                                 return(
-                                  <TableCell key={column.key} align="center">{row[column.key]}</TableCell>
+                                  <TableCell key={column.key} align="center">{column.key === "payment"
+                                      ? row[column.key] + " " + dollarSign
+                                      : row[column.key]
+                                  }</TableCell>
                                 )})}
                           </TableRow>
                       )

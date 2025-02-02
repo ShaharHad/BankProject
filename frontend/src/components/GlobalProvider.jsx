@@ -9,7 +9,7 @@ export const GlobalProvider = (components) => {
     const [balance, setBalance] = useState(0);
     const [transactions, setTransactions] = useState([]);
     const isTransactionsChanged = useRef(true);
-    const [account, setAccount] = useState({});
+    const account = useRef({});
     const baseUrl = import.meta.env.VITE_BASE_URL;
 
     const setNewBalance = (newBalance) => {
@@ -22,10 +22,7 @@ export const GlobalProvider = (components) => {
         if(sessionStorage.getItem("account")!= null){
             const storedAccount = sessionStorage.getItem("account");
             if(storedAccount != null){
-                setAccount(JSON.parse(storedAccount));
-            }
-            else{
-                setAccount({});
+                account.current = JSON.parse(storedAccount);
             }
         }
     }, [])

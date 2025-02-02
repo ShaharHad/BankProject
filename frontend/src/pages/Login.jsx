@@ -11,7 +11,7 @@ import { useGlobal } from "../components/GlobalProvider.jsx";
 axios.defaults.withCredentials = true;
 
 const Login = () => {
-  const { setBalance, baseUrl } = useGlobal();
+  const { setBalance, baseUrl, account } = useGlobal();
 
     const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -34,6 +34,7 @@ const Login = () => {
       sessionStorage.setItem("balance", response.data.balance);
       sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("account", JSON.stringify(response.data.account));
+      account.current = response.data.account;
       navigate("/user/home");
     }).catch((err) => {
       if (err.response && (err.response.status === 400 || err.response.status === 404)) {
