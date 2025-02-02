@@ -48,7 +48,7 @@ const lineChart = (data) => {
             labels: x.slice(currentIndex, currentIndex + visibleData),
             datasets: [
                 {
-                    label: "Amount",
+                    label: "Amount ($)",
                     data: y.slice(currentIndex, currentIndex + visibleData),
                     borderColor: "rgb(75, 192, 192)",
                 }
@@ -87,7 +87,7 @@ const lineChart = (data) => {
                 margin: 1,
                 minWidth: 650,
                 boxShadow: 10,
-                backgroundColor: "rgba(255, 255, 255, 0.8)"
+                backgroundColor: "rgba(242,249,255, 0.9)"
             }}>
                 <Line
                     options={options}

@@ -9,7 +9,7 @@ const BalanceCard = (data) => {
     return (
         <Card sx={{
             width: 1/4,
-            backgroundColor: "rgba(255, 255, 255, 0.6)",
+            backgroundColor: "rgba(242,249,255, 0.9)",
             boxShadow: 5
         }}>
             <CardContent>
@@ -17,14 +17,12 @@ const BalanceCard = (data) => {
                     Current Balance
                 </Typography>
                 <Typography gutterBottom sx={{ fontSize: 16 }}>
-                    {balance}
+                    {balance + " $"}
                 </Typography>
             </CardContent>
         </Card>
     )
 }
-
-
 
 
 export default BalanceCard;

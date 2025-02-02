@@ -67,7 +67,7 @@ const Home = () => {
                       }}>
                           <Box sx={{
                               width: "40rem",
-                              backgroundColor: "rgba(255, 255, 255, 0.8)",
+                              backgroundColor: "rgb(242,249,255, 0.9)",
                               marginTop: 2,
                               paddingBottom: 1,
                               paddingRight: 5,
@@ -79,7 +79,7 @@ const Home = () => {
                           </Box>
                           <Box sx={{
                               width: "40rem",
-                              backgroundColor: "rgba(255, 255, 255, 0.8)",
+                              backgroundColor: "rgba(242,249,255, 0.9)",
                               marginTop: 2,
                               paddingBottom: 1,
                               marginLeft: "2rem",

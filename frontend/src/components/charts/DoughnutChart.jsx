@@ -5,7 +5,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const doughnutChart = (data) => {
 
-    let labels = ["deposit", "withdraw", "transfer (income)", "transfer (expense)"];
+    let labels = ["deposit $", "withdraw $", "transfer (income $)", "transfer (expense $)"];
     let depositAmount = 0;
     let withdrawAmount = 0;
     let transferIncomeAmount = 0;
