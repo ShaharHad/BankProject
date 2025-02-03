@@ -57,7 +57,7 @@ const doughnutChart = (data) => {
                 borderColor: [
                     "rgba(75, 192, 192, 1)",
                     "rgba(255, 99, 132, 1)",
-                    "rgba(255, 255, 255, 1)",
+                    "rgba(230, 164, 255, 1)",
                     "rgba(230, 164, 0, 1)",
                 ],
                 borderWidth: 1,

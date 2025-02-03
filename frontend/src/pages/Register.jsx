@@ -39,16 +39,7 @@ const Register = () => {
       console.log(response);
       navigate("/login");
     }).catch((err) =>{
-      if(err.response.status === 400){
-        setMessage("One or more parameters missing");
-      }
-      else if(err.response.status === 409){
-        setMessage("Email already exists");
-      }
-      else{
-          setMessage("An error occurred. Please try again later.");
-      }
-
+        setMessage(err.response.data.message);
     });
   }
 
@@ -69,7 +60,7 @@ const Register = () => {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              backgroundColor: "rgba(242,249,255, 0.9)",
               padding: 3,
               borderRadius: 2,
               boxShadow: 3,
