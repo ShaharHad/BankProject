@@ -30,11 +30,9 @@ exports.sendActivationLink = async(email) => {
            service: process.env.EMAIL_SERVICE,
            auth: {
                type: 'OAuth2',
-               user: email_sender,
                clientId: client_id,
                clientSecret: client_secret,
-               refreshToken: refresh_token,
-               accessToken: accessToken.token,
+
            },
        });
 
@@ -48,7 +46,11 @@ exports.sendActivationLink = async(email) => {
            html: `<p>Welcome, ${email}!</p>
             <p>Click the link below to activate your account:</p>
             <a href="${activationLink}">Activate Account</a>`,
-
+           auth:{
+               user: email_sender,
+               refreshToken: refresh_token,
+               accessToken: accessToken.token,
+           }
        });
    }
    catch(e){
