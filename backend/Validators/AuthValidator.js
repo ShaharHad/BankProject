@@ -10,7 +10,7 @@ const registerValidateSchema = checkSchema({
     },
     password: {
         exists: { errorMessage: "Password is required" },
-        isString: { errorMessage: "password should be string" },
+        isString: { errorMessage: "Password should be string" },
         isLength: {
             options: { min: 5 },
             errorMessage: "Password should be at least 5 characters",
@@ -36,7 +36,7 @@ const loginValidateSchema = checkSchema({
     },
     password: {
         exists: { errorMessage: "Password is required" },
-        isString: { errorMessage: "password should be string" },
+        isString: { errorMessage: "Password should be string" },
         isLength: {
             options: { min: 5 },
             errorMessage: "Password should be at least 5 characters",

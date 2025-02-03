@@ -5,9 +5,6 @@ import { TextField, Button, Box, Typography, Container } from '@mui/material';
 import axios from 'axios';
 import { useGlobal } from "../components/GlobalProvider.jsx";
 
-
-
-
 axios.defaults.withCredentials = true;
 
 const Login = () => {
@@ -30,6 +27,7 @@ const Login = () => {
       email: email,
       password: password
     }).then((response) => {
+        console.log(response);
       setBalance(response.data.balance);
       sessionStorage.setItem("balance", response.data.balance);
       sessionStorage.setItem("token", response.data.token);
@@ -37,11 +35,12 @@ const Login = () => {
       account.current = response.data.account;
       navigate("/user/home");
     }).catch((err) => {
-      if (err.response && (err.response.status === 400 || err.response.status === 404)) {
-        setMessage("Password or Email incorrect");
-      } else {
-        setMessage("An error occurred. Please try again later.");
-      }
+        if(err.response.status !== 500){
+            setMessage(err.response.data.message);
+        }
+        else{
+            setMessage("An error occurred. Please try again later.");
+        }
     })
   };
 
@@ -88,6 +87,7 @@ const Login = () => {
                       variant="outlined"
                       fullWidth
                       required
+                      type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       margin="normal"

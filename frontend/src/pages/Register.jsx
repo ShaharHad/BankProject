@@ -39,16 +39,7 @@ const Register = () => {
       console.log(response);
       navigate("/login");
     }).catch((err) =>{
-      if(err.response.status === 400){
-        setMessage("One or more parameters missing");
-      }
-      else if(err.response.status === 409){
-        setMessage("Email already exists");
-      }
-      else{
-          setMessage("An error occurred. Please try again later.");
-      }
-
+        setMessage(err.response.data.message);
     });
   }
 

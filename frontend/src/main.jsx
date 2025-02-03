@@ -15,6 +15,7 @@ import Transactions from "./pages/Transactions.jsx";
 import {GlobalProvider} from "./components/GlobalProvider.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Layout from "./components/Layout.jsx";
+import NotFoundPage from "./pages/NotFoundPage.jsx";
 
 import "./style/global.css";
 
@@ -22,6 +23,7 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
+
 
 
 
@@ -37,6 +39,7 @@ const router = createBrowserRouter([
             {path: '/user/withdraw', element: <ProtectedRoute> <Withdraw/> </ProtectedRoute>},
             {path: '/user/transfer', element: <ProtectedRoute> <Transfer/> </ProtectedRoute>},
             {path: '/user/transactions', element: <ProtectedRoute> <Transactions/> </ProtectedRoute>},
+            {path: "*", element: <NotFoundPage/>}
         ]},
 ])
 
