@@ -75,7 +75,7 @@ const Transfer = () => {
                     borderRadius: 2,
                     boxShadow: 3,
                     width: '20%',
-                    backgroundColor: "rgba(255, 255, 255, 0.8)",
+                    backgroundColor: "rgba(242,249,255, 0.9)",
                 }}
             >
                 <Typography variant="h4" gutterBottom>

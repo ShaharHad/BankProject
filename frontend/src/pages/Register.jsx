@@ -60,7 +60,7 @@ const Register = () => {
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              backgroundColor: "rgba(255, 255, 255, 0.8)",
+              backgroundColor: "rgba(242,249,255, 0.9)",
               padding: 3,
               borderRadius: 2,
               boxShadow: 3,

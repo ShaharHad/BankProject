@@ -44,7 +44,7 @@ const CustomTable = (tableData) => {
 
 
     return (
-      <TableContainer component={Paper} sx={{boxShadow: 10, backgroundColor: "rgba(242,249,255, 0.8)"}}>
+      <TableContainer component={Paper} sx={{boxShadow: 10, backgroundColor: "rgba(242,249,255, 0.9)"}}>
           <Table sx={{minWidth: 650}} aria-label="customized table">
               <TableHead>
                   <TableRow>
