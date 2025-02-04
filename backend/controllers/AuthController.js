@@ -1,7 +1,6 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const dbConnection = require('../db_connection/db_connection');
 const logger = require("../utils/Logger");
 const mail = require('../utils/Mail');
 const {createError} = require("../utils/CreateError");
@@ -28,15 +27,8 @@ exports.register = async(req, res, next) => {
             return next(createError(500, "Couldn't send activation link to email"));
         }
 
-        const collection_name = account._id.toString();
+        return res.status(200).json({message: "Successfully created account"});
 
-        dbConnection.createCollection(collection_name).then(() => {
-            return res.status(200).json({message: "Successfully created account"});
-        }).catch(() => {
-            deleteAccount(account_data.email).then(() => {
-                return next(createError(500, "Fail to create transaction collection"));
-            })
-        });
     }).catch((err) => {
         logger.error(err.message);
 

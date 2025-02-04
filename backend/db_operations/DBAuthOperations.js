@@ -1,10 +1,8 @@
 const Account = require('../db_models/account.model');
-const dbConnection = require('../db_connection/db_connection');
-
 
 exports.getAccount = async (email) => {
     try{
-        return await Account.findOne({email: email});
+        return await Account.findOne({email: email}, {transactions: 0});
     }
     catch(err){
         throw err;
