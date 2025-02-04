@@ -1,12 +1,11 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const Account = require('../db_models/account.model');
 const dbConnection = require('../db_connection/db_connection');
 const logger = require("../utils/Logger");
 const mail = require('../utils/Mail');
 const {createError} = require("../utils/CreateError");
-const {getAccount, createAccount} = require("../db_operations/DBAuthOperations");
+const {getAccount, createAccount, deleteAccount} = require("../db_operations/DBAuthOperations");
 
 exports.register = async(req, res, next) => {
 
@@ -25,7 +24,7 @@ exports.register = async(req, res, next) => {
         try{
             mail.sendActivationLink(account.email);
         }catch(err){
-            Account.deleteOne({email: mail});
+            deleteAccount(account_data.email);
             return next(createError(500, "Couldn't send activation link to email"));
         }
 
@@ -34,7 +33,7 @@ exports.register = async(req, res, next) => {
         dbConnection.createCollection(collection_name).then(() => {
             return res.status(200).json({message: "Successfully created account"});
         }).catch(() => {
-            Account.deleteOne({email: account_data.email}).then(() => {
+            deleteAccount(account_data.email).then(() => {
                 return next(createError(500, "Fail to create transaction collection"));
             })
         });
@@ -44,7 +43,7 @@ exports.register = async(req, res, next) => {
         if (err.name === "MongoServerError" && err.code === 11000){
             return next(createError(409, "Duplicate account"));
         }
-        Account.deleteOne({email: account_data.email});
+        deleteAccount(account_data.email);
         return next(createError(500, err.message));
     });
 }
