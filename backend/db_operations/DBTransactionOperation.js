@@ -3,7 +3,7 @@ const dbConnection = require('../db_connection/db_connection');
 const {createError} = require("../utils/CreateError");
 
 
-updateAccount = async (objToUpdate, fieldsToUpdate) => {
+const updateAccount = async (objToUpdate, fieldsToUpdate) => {
     try{
         return await Account.findOneAndUpdate(objToUpdate, fieldsToUpdate, {new: true});
     }
@@ -13,7 +13,7 @@ updateAccount = async (objToUpdate, fieldsToUpdate) => {
 }
 
 
-transferMoney = async (sender, receiver, transaction) => {
+const transferMoney = async (sender, receiver, transaction) => {
     const session = await dbConnection.startSession();
     session.startTransaction();
     try{
@@ -29,7 +29,7 @@ transferMoney = async (sender, receiver, transaction) => {
         );
 
         if(!account_receiver){
-            throw createError(404, "Receiver dont exist");
+            throw createError(404, "Receiver doesn't exist");
         }
 
         await session.commitTransaction();
@@ -43,7 +43,7 @@ transferMoney = async (sender, receiver, transaction) => {
     }
 }
 
-getTransactions = async(documentToGet) => {
+const getTransactions = async(documentToGet) => {
     try{
         return await Account.findOne(documentToGet).select("transactions");
     }
