@@ -1,7 +1,6 @@
-const Account = require('../db_models/account.model');
-const dbConnection = require('../db_connection/db_connection');
 const logger = require("../utils/Logger");
 const {createError} = require("../utils/CreateError");
+const {updateAccount, getTransactions, transferMoney} = require("../db_operations/DBTransactionOperation");
 
 exports.sendPayment = async(req, res, next) => {
 
@@ -13,58 +12,24 @@ exports.sendPayment = async(req, res, next) => {
     if(user.balance < amount){
         return next(createError(402, "User dont have enough money"));
     }
-    const session = await dbConnection.startSession();
-    session.startTransaction();
-    try{
 
-        user.balance -= amount;
-        await user.save();
-
-        const account_receiver = await Account.findOneAndUpdate(
-            {email: receiver},
-            {$inc: {balance: amount}},
-            { new: true });
-        if(!account_receiver){
-            return next(createError(404, "Receiver dont exist"))
-        }
-
-        const sender_transaction_collection = dbConnection.collection(user._id.toString());
-        const receiver_transaction_collection = dbConnection.collection(account_receiver._id.toString());
-
-        if(!sender_transaction_collection || !receiver_transaction_collection){
-            return next(createError(404, "Receiver or sender transaction dont exist"))
-        }
-
-        const transaction = {
-            payment: amount,
-            receiver: receiver,
-            sender: sender,
-            type: "transfer",
-            timestamp: Math.floor(Date.now() / 1000)
-        }
-
-        const res_sender = await sender_transaction_collection.insertOne(transaction);
-        if(!res_sender){
-            return next(createError(404, "Receiver or sender transaction dont exist"))
-        }
-
-        const res_receiver = await receiver_transaction_collection.insertOne(transaction);
-        if(!res_receiver){
-            return next(createError(404, "Receiver or sender transaction dont exist"))
-        }
-
-        await session.commitTransaction();
-        return res.status(200).json({current_balance: user.balance});
-    }catch(err){
-        await session.abortTransaction();
-        if(err.status && err.status === 404){
-            return next(createError(404, "Receiver don't exist"));
-        }
-        return next(createError(500, "Couldn't complete the transaction"));
+    const transaction = {
+        payment: amount,
+        receiver: receiver,
+        sender: sender,
+        type: "transfer",
+        timestamp: Math.floor(Date.now() / 1000)
     }
-    finally {
-        await session.endSession();
-    }
+
+    transferMoney(sender, receiver, transaction).then(() => {
+        return res.status(200).json({current_balance: user.balance - amount});
+    }).catch((err) => {
+        logger.error(err.message);
+        if(err.code !== 500){
+            return next(createError(err.code, err.message));
+        }
+        return next(createError(500, "Couldn't complete the transfer"));
+    });
 }
 
 exports.deposit = async(req, res, next) => {
@@ -72,18 +37,7 @@ exports.deposit = async(req, res, next) => {
     const user = req.user;
     const amount = req.body.amount;
 
-    const session = await dbConnection.startSession();
-    session.startTransaction();
     try{
-
-        user.balance += amount;
-        await user.save();
-
-        const transaction_collection = dbConnection.collection(user._id.toString());
-
-        if(!transaction_collection){
-            return next(createError(402, "Receiver or sender transaction dont exist"));
-        }
 
         const transaction = {
             payment: amount,
@@ -93,17 +47,17 @@ exports.deposit = async(req, res, next) => {
             timestamp: Math.floor(Date.now() / 1000)
         }
 
-        await transaction_collection.insertOne(transaction);
+        await updateAccount(
+            {email: user.email},
+            {$push: {transactions: transaction}, $inc: {balance: amount}}
+        );
 
-        await session.commitTransaction();
-
-        return res.status(200).json({current_balance: user.balance});
+        return res.status(200).json({current_balance: user.balance + amount});
     }catch(err){
-        await session.abortTransaction();
+        if(err.status && err.status !== 500){
+            return next(createError(err.status, err.message));
+        }
         return next(createError(500, "Couldn't complete the deposit operation"));
-    }
-    finally {
-        await session.endSession();
     }
 }
 
@@ -116,19 +70,7 @@ exports.withdraw = async(req, res, next) => {
         return next(createError(402, "User dont have enough money"));
     }
 
-    const session = await dbConnection.startSession();
-    session.startTransaction();
     try{
-
-        user.balance -= amount;
-        await user.save();
-
-        const transaction_collection = dbConnection.collection(user._id.toString());
-
-        if(!transaction_collection){
-            return next(createError(404, "Account transaction dont exist"));
-        }
-
         const transaction = {
             payment: amount,
             receiver: user.email,
@@ -137,17 +79,17 @@ exports.withdraw = async(req, res, next) => {
             timestamp: Math.floor(Date.now() / 1000)
         }
 
-        await transaction_collection.insertOne(transaction);
+        await updateAccount(
+            {email: user.email},
+            {$push: {transactions: transaction}, $inc: {balance: -amount}}
+        );
 
-        await session.commitTransaction();
-
-        return res.status(200).json({current_balance: user.balance});
+        return res.status(200).json({current_balance: user.balance - amount});
     }catch(err){
-        await session.abortTransaction();
+        if(err.status && err.status !== 500){
+            return next(createError(err.status, err.message));
+        }
         return next(createError(500, "Couldn't complete the withdraw operation"));
-    }
-    finally {
-        await session.endSession();
     }
 }
 
@@ -156,16 +98,9 @@ exports.getTransactions = async(req, res, next) => {
     try{
         const user = req.user;
 
-        const user_transaction_collection = dbConnection.collection(user._id.toString());
+        const transactions =  await getTransactions({email: user.email});
 
-        const documents = await user_transaction_collection.find().toArray();
-
-        const user_transactions = documents.map((doc) => {
-            JSON.parse(JSON.stringify(doc));
-            return doc;
-        });
-
-        return res.status(200).json(user_transactions);
+        return res.status(200).json(transactions.transactions);
     }catch(err){
         logger.error(err.message);
         return next(createError(500, err.message));

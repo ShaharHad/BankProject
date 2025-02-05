@@ -53,9 +53,9 @@ exports.sendActivationLink = async(email) => {
            }
        });
    }
-   catch(e){
-       logger.error(e.message);
-       throw e;
+   catch(err){
+       logger.error(err.message);
+       throw err;
    }
 }
 

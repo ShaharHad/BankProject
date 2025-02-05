@@ -1,11 +1,10 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const Account = require('../db_models/account.model');
-const dbConnection = require('../db_connection/db_connection');
 const logger = require("../utils/Logger");
 const mail = require('../utils/Mail');
 const {createError} = require("../utils/CreateError");
+const {getAccount, createAccount, deleteAccount} = require("../db_operations/DBAuthOperations");
 
 exports.register = async(req, res, next) => {
 
@@ -15,7 +14,8 @@ exports.register = async(req, res, next) => {
     }catch(err){
         return next(createError(500, err.message));
     }
-    Account.create(account_data).then((account) => {
+
+    createAccount(account_data).then((account) => {
         if(!account){
             return next(createError(500, "Fail to create account"));
         }
@@ -23,25 +23,19 @@ exports.register = async(req, res, next) => {
         try{
             mail.sendActivationLink(account.email);
         }catch(err){
-            Account.deleteOne({email: mail});
+            deleteAccount(account_data.email);
             return next(createError(500, "Couldn't send activation link to email"));
         }
 
-        const collection_name = account._id.toString();
+        return res.status(200).json({message: "Successfully created account"});
 
-        dbConnection.createCollection(collection_name).then(() => {
-            return res.status(200).json({message: "Successfully created account"});
-        }).catch(() => {
-            Account.deleteOne({email: account_data.email}).then(() => {
-                return next(createError(500, "Fail to create transaction collection"));
-            })
-        });
     }).catch((err) => {
         logger.error(err.message);
-        Account.deleteOne({email: account_data.email});
+
         if (err.name === "MongoServerError" && err.code === 11000){
             return next(createError(409, "Duplicate account"));
         }
+        deleteAccount(account_data.email);
         return next(createError(500, err.message));
     });
 }
@@ -52,16 +46,13 @@ exports.login = async(req, res, next) => {
     const email = req.body.email;
     const password = req.body.password;
 
-     Account.findOne({email: email}).then(async (account) => {
+    getAccount(email).then( async (account) => {
         if(!account){
             return next(createError(404, "Account not found"));
         }
-
-         if(!account.isActive){
-             return next(createError(401, "Account not active"));
-
-         }
-
+        if(!account.isActive){
+            return next(createError(401, "Account not active"));
+        }
         const compare_result = await bcrypt.compare(password, account.password);
         if(!compare_result){
             return next(createError(401, "Authentication failed"));
@@ -76,9 +67,14 @@ exports.login = async(req, res, next) => {
             phone: account.phone,
         }
         return res.status(200).json({token: token, account: newAccount, balance: account.balance});
-    }).catch(() => {
-         return next(createError(500, "Server error"));
-    });
+
+    }).catch((err) => {
+        logger.error(err.message);
+        if(err.code !== 500){
+            return next(createError(err.code, err.message));
+        }
+        return next(createError(500, "Server error"));
+    })
 }
 
 exports.activateAccount = async(req, res, next) => {
@@ -91,7 +87,8 @@ exports.activateAccount = async(req, res, next) => {
         if(err){
             return next(createError(500, "server error"));
         }
-        Account.findOne({email: decoded.email}).then(async (account) => {
+
+        getAccount(decoded.email).then( async (account) => {
             if(!account){
                 return next(createError(404, "Account not found"));
             }

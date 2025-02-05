@@ -27,6 +27,10 @@ const AccountSchema = mongoose.Schema({
         isActive: {
             type: Boolean,
             default: false
+        },
+        transactions: {
+            type: Array,
+            default: []
         }
     },
     {
