@@ -1,4 +1,5 @@
 # Logs
+
 logs
 *.log
 npm-debug.log*
@@ -25,3 +26,6 @@ dist-ssr
 
 /package-lock.json
 /.env
+/cypress/e2e/1-getting-started/
+/cypress/e2e/2-advanced-examples/
+/cypress.env.json

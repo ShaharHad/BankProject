@@ -73,6 +73,7 @@ const Register = () => {
           <form onSubmit={handleSubmit} style={{ width: '100%' }}>
 
             <TextField
+                data-test="name"
                 label="Name"
                 variant="outlined"
                 fullWidth
@@ -84,6 +85,8 @@ const Register = () => {
             />
 
             <TextField
+                data-test="email"
+                name="email"
                 label="Email"
                 variant="outlined"
                 fullWidth
@@ -95,6 +98,7 @@ const Register = () => {
             />
 
             <TextField
+                data-test="password"
                 label="Password"
                 variant="outlined"
                 fullWidth
@@ -106,6 +110,7 @@ const Register = () => {
             />
 
             <TextField
+                data-test="phone"
                 label="Phone"
                 variant="outlined"
                 fullWidth
@@ -125,6 +130,7 @@ const Register = () => {
             )}
 
             <Button
+                data-test="submit"
                 type="submit"
                 variant="contained"
                 color="primary"

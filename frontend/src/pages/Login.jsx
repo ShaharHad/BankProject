@@ -83,6 +83,7 @@ const Login = () => {
               <form onSubmit={handleSubmit} style={{ width: '100%' }}>
 
                   <TextField
+                      data-test="email"
                       label="Email"
                       variant="outlined"
                       fullWidth
@@ -94,6 +95,7 @@ const Login = () => {
                   />
 
                   <TextField
+                      data-test="password"
                       label="Password"
                       variant="outlined"
                       fullWidth
@@ -106,12 +108,13 @@ const Login = () => {
 
 
                   {message && (
-                      <Typography variant="body2" color="error" align="center" sx={{ marginTop: 1 }}>
+                      <Typography data-test="errors" variant="body2" color="error" align="center" sx={{ marginTop: 1 }}>
                           {message}
                       </Typography>
                   )}
 
                   <Button
+                      data-test="submit"
                       type="submit"
                       variant="contained"
                       color="primary"

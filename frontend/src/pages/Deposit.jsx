@@ -20,7 +20,6 @@ const Deposit = () => {
         e.preventDefault();
 
         setIsLoading(true);
-        console.log("amount: ", amount);
         await Axios.post( baseUrl + "/account/transaction/deposit", {amount: parseInt(amount)})
             .then((response) => {
                 setNewBalance(response.data.current_balance);
@@ -36,15 +35,13 @@ const Deposit = () => {
                 sessionStorage.removeItem("balance");
                 navigate("/login");
             }
-            else if(err.status === 402){ // authentication failed and should be exit to login
-                setMessage(err.response.data.message);
-            }
+
             else if(err.status !== 500) {
-                setMessage(err.message);
+                setMessage(err.response.data.message);
             }
             else{
                 setMessage("An error occurred. Please try again later.");
-                console.log(err.message);
+                console.log(err.response.data.message);
             }
         });
 
@@ -77,12 +74,13 @@ const Deposit = () => {
                     backgroundColor: "rgba(242,249,255, 0.9)",
                 }}
             >
-                <Typography variant="h4" gutterBottom>
+                <Typography data-test="title" variant="h4" gutterBottom>
                     Deposit
                 </Typography>
                 <form onSubmit={handleDeposit} style={{ width: '100%' }}>
 
                     <TextField
+                        data-test="amount"
                         label="Amount"
                         variant="outlined"
                         fullWidth
@@ -95,16 +93,18 @@ const Deposit = () => {
                     />
 
                     {message && (
-                        <Typography variant="body2"
-                                    color={isError ? "red" : "green"}
-                                    align="center"
-
+                        <Typography
+                            data-test="errors"
+                            variant="body2"
+                            color={isError ? "red" : "green"}
+                            align="center"
                         >
                             {message}
                         </Typography>
                     )}
 
                     <Button
+                        data-test="submit"
                         type="submit"
                         variant="contained"
                         color="primary"

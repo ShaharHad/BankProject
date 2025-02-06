@@ -34,31 +34,36 @@ const NavBar = () => {
             {token !== null ? (
                 <>
                     <Button
+                        data-test="home"
                         color="inherit"
                         onClick={() => navigate('/user/home')}>
                       Home
                     </Button>
                 <Button
+                    data-test="deposit"
                     color="inherit"
                     onClick={() => navigate('/user/deposit')}>
                   Deposit
                 </Button>
               <Button
-              color="inherit"
-              onClick={() => navigate('/user/withdraw')}>
+                  data-test="withdraw"
+                  color="inherit"
+                  onClick={() => navigate('/user/withdraw')}>
             Withdraw
           </Button>
           <Button
+              data-test="transfer"
               color="inherit"
               onClick={() => navigate('/user/transfer')}>
             Transfer
           </Button>
           <Button
+              data-test="transactions"
               color="inherit"
               onClick={() => navigate('/user/transactions')}>
             Transactions
           </Button>
-          <Button color="inherit" onClick={() => {
+          <Button data-test="logout" color="inherit" onClick={() => {
 
             sessionStorage.removeItem("token");
             sessionStorage.removeItem("account");
@@ -66,17 +71,21 @@ const NavBar = () => {
             navigate('/login');
             isTransactionsChanged.current = true;
 
-          }}>Logout</Button>
+          }}>
+            Logout
+          </Button>
                 </>
               )
             : (
                 <>
                   <Button
+                      data-test="login"
                       color="inherit"
                       onClick={() => navigate('/login')}>
                     Login
                   </Button>
                   <Button
+                      data-test="register"
                       color="inherit"
                       onClick={() => navigate('/register')}>
                     Register

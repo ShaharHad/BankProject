@@ -34,7 +34,7 @@ const Withdraw = () => {
                     alert("Navigate to login screen duo to inactive account");
                     navigate("/login");
                 }
-                else if(err.status === 402){
+                else if(err.status !== 500){
                     setMessage(err.response.data.message);
                 }
 
@@ -80,6 +80,7 @@ const Withdraw = () => {
                 <form onSubmit={handleWithdraw} style={{ width: '100%' }}>
 
                     <TextField
+                        data-test="amount"
                         label="Amount"
                         variant="outlined"
                         fullWidth
@@ -103,6 +104,7 @@ const Withdraw = () => {
                     )}
 
                     <Button
+                        data-test="submit"
                         type="submit"
                         variant="contained"
                         color="primary"

@@ -36,16 +36,13 @@ const Transfer = () => {
                     alert("Navigate to login screen duo to inactive account");
                     navigate("/login");
                 }
-                else if(err.status === 402) {
-                    console.log(err);
+                else if(err.status !== 500) {
+                    console.error(err);
                     setMessage(err.response.data.message);
-                }
-                else if(err.status === 404) {
-                    setMessage("Receiver dont exist");
                 }
                 else{
                     setMessage("An error occurred. Please try again later.");
-                    console.log(err.message);
+                    console.error(err.message);
                 }
             })
 
@@ -84,6 +81,7 @@ const Transfer = () => {
                 <form onSubmit={handleTransaction} style={{ width: '100%' }}>
 
                     <TextField
+                        data-test="amount"
                         label="Amount"
                         variant="outlined"
                         fullWidth
@@ -97,6 +95,7 @@ const Transfer = () => {
                     />
 
                     <TextField
+                        data-test="receiver"
                         label="Receiver"
                         variant="outlined"
                         fullWidth
@@ -119,6 +118,7 @@ const Transfer = () => {
                     )}
 
                     <Button
+                        data-test="submit"
                         type="submit"
                         variant="contained"
                         color="primary"
