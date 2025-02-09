@@ -31,8 +31,6 @@ This application allows users to:
 - **Backend**:
     - Node.js
     - Express
-    - MongoDB
-    - Mongoose (for MongoDB object modeling)
 
 - **Database**:
     - MongoDB is used as the database to store user information, transactions, and account data. Mongoose is employed to manage schema definitions and interactions with the MongoDB database.

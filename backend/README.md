@@ -99,6 +99,23 @@ This repository provides a backend server for a banking application. The API sup
       "message": "Fail to create account"
     }
     ```
+    #### 2. **Register**
+- **Endpoint**: `/api/auth/register`
+- **Method**: POST
+- **Request Body**:
+  ```json
+  {
+    "username": "string",
+    "password": "string",
+    "email": "string",
+    "phone": "string"
+  }
+  ```
+- **Response**:
+  - **HTML page**
+    - Success: Activation success
+    - failure: Already activate or error page
+
 ---
 
 ### Banking Operations
@@ -256,5 +273,12 @@ PORT=your_port
 DB_URI=your_database_connection_string
 TOKEN_SECRET=your_jwt_secret
 SALT=your_salt_for_bcrypt
+
+CLIENT_ID=your_google_client_id
+CLIENT_SECRET=your_google_client_secret
+REDIRECT_URI=your_redirect_uri
+EMAIL_SENDER=your_email_sender
+REFRESH_TOKEN=your_gmail_refresh_token
+
 ```
 

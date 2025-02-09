@@ -50,3 +50,4 @@ Facilitates transferring money to another user's account. Users must specify the
 - **Vite**: A fast build tool and development server.
 - **React**: A JavaScript library for building user interfaces.
 - **Material-UI (MUI)**: A popular React UI framework for creating responsive and accessible components.
+- **Cypress**: A Testing framework for javascript for testing the frontend flows
