@@ -1,14 +1,16 @@
-import { useState } from "react";
+import {useContext, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { TextField, Button, Box, Typography, Container } from '@mui/material';
 
 import axios from 'axios';
 import { useGlobal } from "../components/GlobalProvider.jsx";
+import { WebSocketContext } from '../components/WebSocketProvider.jsx';
 
 axios.defaults.withCredentials = true;
 
 const Login = () => {
   const { setBalance, baseUrl, account } = useGlobal();
+  const socket = useContext(WebSocketContext);
 
     const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -27,12 +29,12 @@ const Login = () => {
       email: email,
       password: password
     }).then((response) => {
-        console.log(response);
       setBalance(response.data.balance);
       sessionStorage.setItem("balance", response.data.balance);
       sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("account", JSON.stringify(response.data.account));
       account.current = response.data.account;
+      socket.current.emit('register', {email: email});
       navigate("/user/home");
     }).catch((err) => {
         if(err.response.status !== 500){

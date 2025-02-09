@@ -1,14 +1,18 @@
 import {useNavigate} from "react-router-dom";
-import {useState} from "react";
+import {useContext, useState} from "react";
+import {Box, Button, Container, TextField, Typography} from "@mui/material";
+
 
 import Axios from "../utils/Axios.js";
 import {useGlobal} from "../components/GlobalProvider.jsx";
-import {Box, Button, Container, TextField, Typography} from "@mui/material";
+import { WebSocketContext } from '../components/WebSocketProvider.jsx';
+
 
 const Transfer = () => {
 
     const navigate = useNavigate();
     const {setNewBalance, baseUrl, isTransactionsChanged} = useGlobal();
+    const socket = useContext(WebSocketContext);
 
     const [receiver, setReceiver] = useState("");
     const [amount, setAmount] = useState("");
@@ -26,6 +30,7 @@ const Transfer = () => {
                 setNewBalance(response.data.current_balance);
                 setIsError(false);
                 setMessage("Payment transfer success");
+            socket.current.emit('transfer', {receiver: receiver, amount: amount});
             isTransactionsChanged.current = true;
             }).catch((err) =>{
                 setIsError(true);
