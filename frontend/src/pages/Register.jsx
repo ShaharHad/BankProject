@@ -2,7 +2,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from 'axios'
 
-
 import {useGlobal} from "../components/GlobalProvider.jsx";
 import {Box, Button, Container, TextField, Typography} from "@mui/material";
 
@@ -35,8 +34,7 @@ const Register = () => {
       password: password,
       phone: phone,
       name: name
-    }).then((response) => {
-      console.log(response);
+    }).then(() => {
       navigate("/login");
     }).catch((err) =>{
         setMessage(err.response.data.message);

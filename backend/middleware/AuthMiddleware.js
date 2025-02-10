@@ -2,12 +2,13 @@
 const jwt = require('jsonwebtoken');
 const Account = require('../db_models/account.model');
 const logger = require('../utils/Logger');
-const urlExclude = "auth";
+const urlExclude = ["auth"];
 
 module.exports = ( async (req, res, next) => {
-    if(req.originalUrl.includes(urlExclude)){
+    if(urlExclude.some(str => req.originalUrl.includes(str))){
         return next();
     }
+
     const bearer_token = req.headers.authorization;
 
     if(null == bearer_token || null == bearer_token.split(' ')[1]){

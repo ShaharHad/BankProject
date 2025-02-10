@@ -1,10 +1,14 @@
 const app = require('./app');
 const logger = require('./utils/Logger');
 const http = require('http');
+const {initializeWebSocket} = require("./SocketServer");
 
 const server = http.createServer(app);
 
+initializeWebSocket(server);
+
 const dbConnection = require('./db_connection/db_connection');
+
 
 dbConnection.on('connected', () => {
     const port = process.env.PORT || 10000;

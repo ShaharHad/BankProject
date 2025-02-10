@@ -17,26 +17,36 @@ const initializeWebSocket = (server) => {
 
     io.on('connection', (socket) => {
         logger.info(`Account connected: ${socket.id}`);
-        // socket.emit("message", { message: "You are now registered!" });
 
         socket.on('register', (data) => {
-
-            connectedAccounts.set(data.email, socket.id);
+            if(!connectedAccounts.has(socket.id)){
+                connectedAccounts.set(data.email, new Set());
+            }
+            connectedAccounts.get(data.email).add(socket.id);
+            socket.email = data.email;
             logger.info(`Account ${data.email} registered with socket ID ${socket.id}`);
         });
 
         socket.on('transfer', (data) => {
-            const receiverSocketId = connectedAccounts.get(data.receiver);
-            if(receiverSocketId){
-                io.to(receiverSocketId).emit('message', {message: `You get ${data.amount}$`});
+            const receiverSockets = connectedAccounts.get(data.receiver);
+            if(receiverSockets){
+                receiverSockets.forEach((socketId) => {
+                    io.to(socketId).emit('message', {message: `You get ${data.amount}$`});
+                })
+                logger.info(`Received ${socket.id} received ${data.amount}`);
             }
         });
 
         socket.on('disconnect', () => {
-            connectedAccounts.forEach((value, key) => {
-                if (value === socket.id) connectedAccounts.delete(key);
-            });
-            logger.info(`Account disconnected: ${socket.id}`);
+            if(socket.email && connectedAccounts.has(socket.email)){
+                const setOfSockets = connectedAccounts.get(socket.email);
+                setOfSockets.delete(socket.id);
+                logger.info(`Socket ID ${socket.id} removed for account ${socket.email}`);
+                if(0 === setOfSockets.size){
+                    connectedAccounts.delete(socket.email);
+                    logger.info(`Account ${socket.email} completely disconnected`);
+                }
+            }
         });
     });
 
