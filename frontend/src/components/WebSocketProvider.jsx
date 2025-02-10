@@ -1,7 +1,8 @@
-import {createContext, useEffect, useRef} from 'react';
+import {createContext, useEffect, useRef, useState} from 'react';
 import {io} from "socket.io-client";
 
 import { useGlobal } from "./GlobalProvider.jsx";
+import CustomAlert from "./CustomAlert.jsx";
 
 
 export const WebSocketContext = createContext();
@@ -12,6 +13,9 @@ export const WebSocketProvider = (components) => {
 
     const navEntries = performance.getEntriesByType("navigation");
     const isReload = navEntries.length > 0 && navEntries[0].type === "reload";
+
+    const [showAlert, setShowAlert] = useState(false);
+    const [alertMessage, setAlertMessage] = useState("");
 
     const { account } = useGlobal();
     const path = window.location.pathname;
@@ -34,7 +38,8 @@ export const WebSocketProvider = (components) => {
         });
 
         socket.current.on('message', (data) => {
-            alert('Message from server:' + data.message)
+            setShowAlert(true);
+            setAlertMessage(data.message);
         });
 
         return () => {
@@ -45,6 +50,9 @@ export const WebSocketProvider = (components) => {
 
     return (
         <WebSocketContext.Provider value={socket}>
+            {
+                showAlert && (<CustomAlert title={"Info"} message={alertMessage} onClose={() => setShowAlert(false)} />)
+            }
             {children}
         </WebSocketContext.Provider>
     );

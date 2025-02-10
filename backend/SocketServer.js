@@ -31,7 +31,7 @@ const initializeWebSocket = (server) => {
             const receiverSockets = connectedAccounts.get(data.receiver);
             if(receiverSockets){
                 receiverSockets.forEach((socketId) => {
-                    io.to(socketId).emit('message', {message: `You get ${data.amount}$`});
+                    io.to(socketId).emit('message', {message: `You received ${data.amount}$ from ${socket.email}`});
                 })
                 logger.info(`Received ${socket.id} received ${data.amount}`);
             }
