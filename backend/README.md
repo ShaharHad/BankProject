@@ -2,6 +2,22 @@
 
 This repository provides a backend server for a banking application. The API supports basic banking operations such as user authentication, deposits, withdrawals, and transfers.
 
+## Table of Contents
+- [Features](#features)
+- [API Endpoints](#API-Endpoints)
+  - [Authentication](#Authentication)
+    - [Login](#Login)
+    - [Register](#Register)
+    - [Activate Account](#activate-account)
+  - [Banking Operations](#banking-operations)
+    - [Deposit](#deposit)
+    - [Withdraw](#withdraw)
+    - [Transfer](#transfer)
+    - [Get Transaction](#get-transaction)
+- [Environment Variables](#environment-variables)
+- [Technologies and libraries Used](#technologies-and-libraries-used)
+
+
 ## Features
 
 1. **User Authentication**:
@@ -18,8 +34,8 @@ This repository provides a backend server for a banking application. The API sup
 
 ### Authentication
 
-#### 1. **Login**
-- **Endpoint**: `/api/auth/login`
+#### **Login**
+- **Endpoint**: `/api/v1/auth/login`
 - **Method**: POST
 - **Request Body**:
   ```json
@@ -59,8 +75,8 @@ This repository provides a backend server for a banking application. The API sup
     }
     ```
 
-#### 2. **Register**
-- **Endpoint**: `/api/auth/register`
+#### **Register**
+- **Endpoint**: `/api/v1/auth/register`
 - **Method**: POST
 - **Request Body**:
   ```json
@@ -99,18 +115,10 @@ This repository provides a backend server for a banking application. The API sup
       "message": "Fail to create account"
     }
     ```
-    #### 2. **Register**
-- **Endpoint**: `/api/auth/register`
-- **Method**: POST
-- **Request Body**:
-  ```json
-  {
-    "username": "string",
-    "password": "string",
-    "email": "string",
-    "phone": "string"
-  }
-  ```
+#### **Activate Account**
+- **Endpoint**: `/api/v1/auth/activateAccount/:token`
+- **Method**: GET
+
 - **Response**:
   - **HTML page**
     - Success: Activation success
@@ -120,7 +128,7 @@ This repository provides a backend server for a banking application. The API sup
 
 ### Banking Operations
 
-#### 3. **Deposit**
+#### **Deposit**
 - **Endpoint**: `/api/account/transaction/deposit`
 - **Method**: POST
 - **Request Body**:
@@ -158,7 +166,7 @@ This repository provides a backend server for a banking application. The API sup
     }
     ```
 
-#### 4. **Withdraw**
+#### **Withdraw**
 - **Endpoint**: `/api/account/transaction/withdraw`
 - **Method**: POST
 - **Request Body**:
@@ -196,7 +204,7 @@ This repository provides a backend server for a banking application. The API sup
     }
     ```
 
-#### 5. **Transfer**
+#### **Transfer**
 - **Endpoint**: `/api/account/transaction/transfer`
 - **Method**: POST
 - **Request Body**:
@@ -242,7 +250,7 @@ This repository provides a backend server for a banking application. The API sup
     }
     ```
 
-#### 5. **get transaction**
+#### **Get Transaction**
 - **Endpoint**: `/api/account/transaction/`
 - **Method**: GET
 

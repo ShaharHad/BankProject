@@ -12,6 +12,7 @@ This is the frontend for a bank application built using Vite, React, and Materia
     - [Deposit](#deposit)
     - [Withdraw](#withdraw)
     - [Transfer](#transfer)
+- [Environment variables](#environment-variables)
 - [Technologies and libraries Used](#Technologies-and-libraries-Used)
 
 ## Usage
@@ -44,6 +45,14 @@ Lets users withdraw money from their account. Users are notified if their accoun
 
 ### Transfer
 Facilitates transferring money to another user's account. Users must specify the recipient's account details and the transfer amount. The receiver user get real time notification about the transfer.
+
+## Environment variables
+
+```env
+VITE_BASE_URL=your_base_url
+
+```
+
 
 ## Technologies and libraries Used
 
