@@ -12,7 +12,7 @@ This is the frontend for a bank application built using Vite, React, and Materia
     - [Deposit](#deposit)
     - [Withdraw](#withdraw)
     - [Transfer](#transfer)
-- [Technologies Used](#technologies-used)
+- [Technologies and libraries Used](#Technologies-and-libraries-Used)
 
 ## Usage
 
@@ -43,11 +43,18 @@ Allows users to add money to their account by specifying the deposit amount. Inp
 Lets users withdraw money from their account. Users are notified if their account balance is insufficient to complete the withdrawal.
 
 ### Transfer
-Facilitates transferring money to another user's account. Users must specify the recipient's account details and the transfer amount.
+Facilitates transferring money to another user's account. Users must specify the recipient's account details and the transfer amount. The receiver user get real time notification about the transfer.
 
-## Technologies Used
+## Technologies and libraries Used
 
-- **Vite**: A fast build tool and development server.
-- **React**: A JavaScript library for building user interfaces.
-- **Material-UI (MUI)**: A popular React UI framework for creating responsive and accessible components.
-- **Cypress**: A Testing framework for javascript for testing the frontend flows
+- **vite**: A fast build tool and development server.
+- **react**: A JavaScript library for building user interfaces.
+- **react-dom**: Provides methods to manage the rendering of React components into the DOM.
+- **react-router-dom**: A React library for handling routing in single-page applications (SPAs).
+- **material-ui (MUI)**: A popular React UI framework for creating responsive and accessible components.
+- **cypress**: A Testing framework for javascript for testing the frontend flows.
+- **socket.io-client** A socket to send/listen to events from the server.
+- **axios**: An promise-based HTTP client for making requests to API.
+- **chart.js**: library for creating interactive and customizable charts in javascript.
+- **react-chartjs-2**:  A React wrapper for Chart.js, allowing Chart.js charts to be used as React components.
+- **socket.io-client**: A client-side library for enabling real-time, bidirectional communication with a server using Socket.IO.

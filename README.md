@@ -20,6 +20,7 @@ This application allows users to:
 2. View a graphical summary of transactions from the last 7 days.
 3. Perform banking operations such as deposits, withdrawals, and transfers.
 4. View all transactions they send or get.
+5. Get real time notification when money transferred to their account
 
 ## Technologies Used
 
@@ -37,9 +38,9 @@ This application allows users to:
 
 ## Password Security
 
-The backend uses bcrypt to securely hash user passwords before storing them in the database. This ensures that even if the database is compromised, the original passwords cannot be easily retrieved. During authentication, bcrypt is also used to compare the hashed password with the user-provided password.
+The system uses bcrypt to securely hash user passwords before storing them in the database. This ensures that even if the database is compromised, the original passwords cannot be easily retrieved. During authentication, bcrypt is also used to compare the hashed password with the user-provided password.
 
-## Account verification
+## Account Verification
 The system send verification email to user after successful registration and only when the user click on the verification link in its mail he can login to system
 
 ## Authentication
@@ -50,6 +51,8 @@ The system uses Bearer Tokens for secure communication between the frontend and 
    ```
 This ensures that only authenticated users can access protected endpoints.
 
+## Real Time Notification
+When a user transfers money to another account, the recipient receives a notification instantly, provided they are logged into their account at the time
 ## Installation
 
 Follow these steps to set up and run the project:

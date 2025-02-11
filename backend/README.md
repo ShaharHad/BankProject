@@ -282,3 +282,20 @@ REFRESH_TOKEN=your_gmail_refresh_token
 
 ```
 
+## Technologies and libraries Used
+
+- **node js**: A framework to run javascript.
+- **express**: A web application framework that provides methods for routing, middlewares and handling HTTP requests and response.
+- **jsonwebtoken**: Handles JSON Web Tokens (JWT) for authentication.
+- **express-validator**: Provides validation and sanitization middleware for Express.
+- **bcryptjs**: Provides hashing and salting functionalities for passwords.
+- **cors**: Enables Cross-Origin Resource Sharing (CORS).
+- **dotenv**: Loads environment variables from a .env file into process.env.
+- **googleapis**: Provides access to Google's APIs (used for access to gmail api) 
+- **mongoose**: An Object Data Modeling (ODM) library for MongoDB
+- **morgan**: HTTP request logger middleware for Express.
+- **winston**: A logging library for Node.js
+- **socket.io**: Enables real-time, bidirectional communication between server and client
+- **nodemailer**: Sends emails from Node.js applications
+- **jest**: JavaScript testing framework
+- **supertest**: HTTP assertions library for testing APIs

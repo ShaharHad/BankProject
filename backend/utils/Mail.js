@@ -21,9 +21,7 @@ const oauth2Client = new google.auth.OAuth2(
 oauth2Client.setCredentials({refresh_token: refresh_token});
 
 exports.sendActivationLink = async(email) => {
-
    try{
-
        const accessToken = await oauth2Client.getAccessToken();
 
        const transporter = nodemailer.createTransport({
@@ -32,7 +30,6 @@ exports.sendActivationLink = async(email) => {
                type: 'OAuth2',
                clientId: client_id,
                clientSecret: client_secret,
-
            },
        });
 
