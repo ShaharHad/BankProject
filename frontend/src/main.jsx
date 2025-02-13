@@ -12,6 +12,9 @@ import Deposit from "./pages/Deposit.jsx";
 import Withdraw from "./pages/Withdraw.jsx";
 import Transfer from "./pages/Transfer.jsx";
 import Transactions from "./pages/Transactions.jsx";
+
+import VideoChat from "./pages/VideoChat.jsx";
+
 import {GlobalProvider} from "./components/GlobalProvider.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import Layout from "./components/Layout.jsx";
@@ -37,6 +40,7 @@ const router = createBrowserRouter([
             {path: '/user/withdraw', element: <ProtectedRoute> <Withdraw/> </ProtectedRoute>},
             {path: '/user/transfer', element: <ProtectedRoute> <Transfer/> </ProtectedRoute>},
             {path: '/user/transactions', element: <ProtectedRoute> <Transactions/> </ProtectedRoute>},
+            {path: '/user/videochat', element: <ProtectedRoute> <VideoChat/> </ProtectedRoute>},
             {path: "*", element: <NotFoundPage/>}
         ]},
 ])

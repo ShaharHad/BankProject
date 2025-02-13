@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
+const uuid = require('uuid').v4;
+const fs = require("fs");
 
 const logger = require("../utils/Logger");
 const mail = require('../utils/Mail');
@@ -105,16 +107,62 @@ exports.activateAccount = async(req, res, next) => {
             return res.send('<h1>Account activated successfully!</h1>');
 
         }).catch(() => {
-            return next(createError(500, "server error"));
+            logger.error(err.message);
+            if(err.code !== 500){
+                return next(createError(err.code, err.message));
+            }
+            return next(createError(500, "Server error"));
         });
     })
 }
 
-//TODO reset password functionality
-// exports.resetPassword = async(req, res, next) => {
-//     const email = req.body.email;
-//
-// }
+exports.generateJitsiToken = async(req, res, next) => {
+    try{
+        const apiJitsiKey = fs.readFileSync("jitsi.pk", "utf8");
+        const apiJitsiId = process.env.JITSI_APP_ID;
+        const apiJitsiKid = process.env.JITSI_APP_KID;
+        const now = new Date();
 
+        const payload = {
+            aud: 'jitsi',
+            context: {
+                user: {
+                    id: uuid(),
+                    name: req.user.name,
+                    avatar: "",
+                    email: req.user.email,
+                },
+                features: {
+                    livestreaming: 'true',
+                    recording: 'true',
+                    transcription: 'true',
+                    "outbound-call": 'true'
+                }
+            },
+            iss: 'chat',
+            room: '*',
+            sub: apiJitsiId,
+            exp: Math.round(now.setHours(now.getHours() + 3) / 1000),
+            nbf: (Math.round((new Date).getTime() / 1000) - 10)
+        }
 
+        const options = {
+            algorithm: 'RS256',
+            header: {
+                kid: apiJitsiKid
+            }
+        }
+
+        const token = jwt.sign(payload, apiJitsiKey, options);
+
+        return res.status(200).json({token: token});
+    }
+    catch(err){
+        logger.error(err.message);
+        if(err.code !== 500){
+            return next(createError(err.code, err.message));
+        }
+        return next(createError(500, "Server error"));
+    }
+}
 

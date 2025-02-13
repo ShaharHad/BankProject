@@ -63,6 +63,12 @@ const NavBar = () => {
               onClick={() => navigate('/user/transactions')}>
             Transactions
           </Button>
+          <Button
+              data-test="videochat"
+              color="inherit"
+              onClick={() => navigate('/user/videochat')}>
+            Video Chat
+          </Button>
           <Button data-test="logout" color="inherit" onClick={() => {
 
             sessionStorage.removeItem("token");

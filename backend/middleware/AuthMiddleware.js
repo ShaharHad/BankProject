@@ -2,7 +2,7 @@
 const jwt = require('jsonwebtoken');
 const Account = require('../db_models/account.model');
 const logger = require('../utils/Logger');
-const urlExclude = ["auth"];
+const urlExclude = ["login", "register", "activateAccount"];
 
 module.exports = ( async (req, res, next) => {
     if(urlExclude.some(str => req.originalUrl.includes(str))){

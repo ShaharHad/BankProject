@@ -25,7 +25,7 @@ const Login = () => {
       return;
     }
 
-    await axios.post(baseUrl + "/auth/login", {
+    axios.post(baseUrl + "/auth/login", {
       email: email,
       password: password
     }).then((response) => {

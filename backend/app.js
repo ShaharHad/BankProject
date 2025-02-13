@@ -43,9 +43,8 @@ app.use(express.json()); // middleware for nodejs to parse json !!!
 app.use(cookieParser());
 app.use(middlewareMorgan);
 
-
-app.use('/api/v1/auth', authRoutes);
 app.use(authMiddleware);
+app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/account/transaction', transactionRoutes);
 app.use('/api/v1/account', accountRouter);
 

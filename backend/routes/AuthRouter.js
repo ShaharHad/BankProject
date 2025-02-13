@@ -24,4 +24,6 @@ router.post('/login', loginValidateSchema, async (req, res, next) => {
 
 router.get('/activateAccount/:token', authController.activateAccount);
 
+router.get('/generateJitsiToken', authController.generateJitsiToken);
+
 module.exports = router;
