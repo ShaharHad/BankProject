@@ -23,6 +23,11 @@ const JitsiMeetComponent = (data) => {
         });
     }, []);
 
+    const handleHangup = () => {
+        console.log("The user has hung up the meeting.");
+        setShowMeeting(false);
+    };
+
     return (
         isLoading ? (
             <Typography variant="h3">Loading...</Typography>
@@ -50,11 +55,13 @@ const JitsiMeetComponent = (data) => {
                                 VIDEO_LAYOUT_FIT: 'nocrop',
                                 MOBILE_APP_PROMO: false,
                                 TILE_VIEW_MAX_COLUMNS: 4,
-                                DISABLE_INVITE_FUNCTIONS: true,
                                 TOOLBAR_BUTTONS: [
-                                    "microphone", "camera", "desktop", "chat", "raisehand",
-                                    "tileview", "fullscreen", "hangup" // Exclude "invite"
+                                    "microphone", "camera", "chat", "raisehand",
+                                    "tileview", "fullscreen", "hangup"
                                 ]
+                            }}
+                            onApiReady={(api) => {
+                                api.on('videoConferenceLeft', handleHangup);
                             }}
                         />
                     </Box>
