@@ -1,5 +1,5 @@
 import {JaaSMeeting} from "@jitsi/react-sdk";
-import {Button, Box, Typography} from "@mui/material";
+import {Box, CircularProgress} from "@mui/material";
 import {useEffect, useState} from "react";
 import { useGlobal } from "./GlobalProvider.jsx";
 import Axios from "../utils/Axios.js";
@@ -7,7 +7,7 @@ import Axios from "../utils/Axios.js";
 const JitsiMeetComponent = (data) => {
 
     const [jwt, setJwt] = useState("");
-    const [showMeeting, setShowMeeting] = useState(false);
+    const [showMeeting, setShowMeeting] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const { baseUrl } = useGlobal();
 
@@ -24,20 +24,36 @@ const JitsiMeetComponent = (data) => {
     }, []);
 
     const handleHangup = () => {
-        console.log("The user has hung up the meeting.");
+
+        if("handleExit" in data){
+            data.handleExit();
+        }
         setShowMeeting(false);
+        console.log("The user has hung up the meeting.");
     };
+
+    const updateParticipants = () => {
+
+        if("handleExit" in data){
+            data.handleExit();
+        }
+        console.log("The user has hung up the meeting.");
+
+    };
+
 
     return (
         isLoading ? (
-            <Typography variant="h3">Loading...</Typography>
+                <Box sx={{ display: 'flex' }}>
+                    <CircularProgress />
+                </Box>
         )
         : (
             <Box sx={{ textAlign: "center", mt: 4 }}>
                 {!showMeeting ? (
-                    <Button variant="contained" color="primary" onClick={() => setShowMeeting(true)}>
-                        Start Video Call
-                    </Button>
+                    <Box sx={{ display: 'flex' }}>
+                        <CircularProgress />
+                    </Box>
                 ) : (
                     <Box >
                         <JaaSMeeting
@@ -60,8 +76,10 @@ const JitsiMeetComponent = (data) => {
                                     "tileview", "fullscreen", "hangup"
                                 ]
                             }}
-                            onApiReady={(api) => {
+                            onApiReady={(api) => { // configure listeners
                                 api.on('videoConferenceLeft', handleHangup);
+                                // api.on('videoConferenceLeft', handleHangup);
+                                // api.on('videoConferenceLeft', handleHangup);
                             }}
                         />
                     </Box>
@@ -72,47 +90,3 @@ const JitsiMeetComponent = (data) => {
 };
 
 export default JitsiMeetComponent;
-
-
-
-
-
-
-// import React, { useState } from "react";
-// import { JitsiMeeting } from "@jitsi/react-sdk";
-// import { Button, Box } from "@mui/material";
-//
-// const JitsiMeetComponent = ({ roomName, displayName }) => {
-//     const [showMeeting, setShowMeeting] = useState(false);
-//
-//     return (
-//         <Box sx={{ textAlign: "center", mt: 4 }}>
-//             {!showMeeting ? (
-//                 <Button variant="contained" color="primary" onClick={() => setShowMeeting(true)}>
-//                     Start Video Call
-//                 </Button>
-//             ) : (
-//                 <Box sx={{ height: "600px" }}>
-//                     <JitsiMeeting
-//                         roomName={roomName}
-//                         configOverwrite={{
-//                             startWithAudioMuted: true,
-//                             startWithVideoMuted: true,
-//                         }}
-//                         interfaceConfigOverwrite={{
-//                             DISABLE_JOIN_LEAVE_NOTIFICATIONS: true,
-//                         }}
-//                         userInfo={{ displayName }}
-//                         getIFrameRef={(iframe) => {
-//                             iframe.style.height = "600px";
-//                             iframe.style.width = "100%";
-//                         }}
-//                     />
-//                 </Box>
-//             )}
-//         </Box>
-//     );
-// };
-//
-// export default JitsiMeetComponent;
-

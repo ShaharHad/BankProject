@@ -6,13 +6,11 @@ import {useNavigate} from "react-router-dom";
 import {useGlobal} from "./GlobalProvider.jsx";
 
 
+
 const NavBar = () => {
 
   const navigate = useNavigate();
   const { isTransactionsChanged }  = useGlobal();
-
-
-
   const token = sessionStorage.getItem('token');
 
   return (
@@ -63,12 +61,6 @@ const NavBar = () => {
               onClick={() => navigate('/user/transactions')}>
             Transactions
           </Button>
-          <Button
-              data-test="videochat"
-              color="inherit"
-              onClick={() => navigate('/user/videochat')}>
-            Video Chat
-          </Button>
           <Button data-test="logout" color="inherit" onClick={() => {
 
             sessionStorage.removeItem("token");
@@ -76,7 +68,6 @@ const NavBar = () => {
             sessionStorage.removeItem("balance");
             navigate('/login');
             isTransactionsChanged.current = true;
-
           }}>
             Logout
           </Button>

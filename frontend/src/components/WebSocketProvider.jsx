@@ -8,8 +8,9 @@ import CustomAlert from "./CustomAlert.jsx";
 export const WebSocketContext = createContext();
 
 export const WebSocketProvider = (components) => {
-        const children = components.children;
+    const children = components.children;
     const socket = useRef(null);
+    const serverUrl = import.meta.env.VITE_SERVER
 
     const navEntries = performance.getEntriesByType("navigation");
     const isReload = navEntries.length > 0 && navEntries[0].type === "reload";
@@ -21,7 +22,7 @@ export const WebSocketProvider = (components) => {
     const path = window.location.pathname;
 
     useEffect(() => {
-        socket.current = io.connect('http://localhost:8000',{
+        socket.current = io.connect(serverUrl,{
             transports: ['websocket'],
             withCredentials:true
         });
