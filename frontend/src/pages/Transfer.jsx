@@ -6,12 +6,13 @@ import {Box, Button, Container, TextField, Typography} from "@mui/material";
 import Axios from "../utils/Axios.js";
 import {useGlobal} from "../components/GlobalProvider.jsx";
 import { WebSocketContext } from '../components/WebSocketProvider.jsx';
+import RequestVideoChatDialog from "../components/RequestVideoChatDialog.jsx";
 
 
 const Transfer = () => {
 
     const navigate = useNavigate();
-    const {setNewBalance, baseUrl, isTransactionsChanged} = useGlobal();
+    const {setNewBalance, baseUrl, isTransactionsChanged, account} = useGlobal();
     const socket = useContext(WebSocketContext);
 
     const [receiver, setReceiver] = useState("");
@@ -19,9 +20,15 @@ const Transfer = () => {
     const [message, setMessage] = useState("");
     const [isError, setIsError] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isTransferDone, setIsTransferDone] = useState(false);
 
     const handleTransaction = async (e) => {
         e.preventDefault();
+        if(receiver === account.current.email){
+            setIsError(true);
+            setMessage("User cannot transfer money to itself");
+            return;
+        }
 
         setIsLoading(true);
 
@@ -32,6 +39,7 @@ const Transfer = () => {
                 setMessage("Payment transfer success");
             socket.current.emit('transfer', {receiver: receiver, amount: amount});
             isTransactionsChanged.current = true;
+            setIsTransferDone(true);
             }).catch((err) =>{
                 setIsError(true);
                 if(err.status === 401){ // authentication failed and should be exit to login
@@ -67,6 +75,14 @@ const Transfer = () => {
 
             }}
         >
+            {isTransferDone ? (
+                <RequestVideoChatDialog
+                    onClose={() => setIsTransferDone(false)}
+                    handleYesButton={() => navigate("/user/videochat")}
+                ></RequestVideoChatDialog>
+            ):(
+                <></>
+            )}
             <Box
                 sx={{
                     display: 'flex',
@@ -80,63 +96,63 @@ const Transfer = () => {
                     backgroundColor: "rgba(242,249,255, 0.9)",
                 }}
             >
-                <Typography variant="h4" gutterBottom>
-                    Transfer
-                </Typography>
-                <form onSubmit={handleTransaction} style={{ width: '100%' }}>
+                    <Typography variant="h4" gutterBottom>
+                        Transfer
+                    </Typography>
+                    <form onSubmit={handleTransaction} style={{ width: '100%' }}>
 
-                    <TextField
-                        data-test="amount"
-                        label="Amount"
-                        variant="outlined"
-                        fullWidth
-                        required
-                        type="text"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        margin="normal"
-                        slotProps={{ htmlInput: { maxLength: 6 , minLength: 1} }}
+                        <TextField
+                            data-test="amount"
+                            label="Amount"
+                            variant="outlined"
+                            fullWidth
+                            required
+                            type="text"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            margin="normal"
+                            slotProps={{ htmlInput: { maxLength: 6 , minLength: 1} }}
 
-                    />
+                        />
 
-                    <TextField
-                        data-test="receiver"
-                        label="Receiver"
-                        variant="outlined"
-                        fullWidth
-                        required
-                        type="email"
-                        value={receiver}
-                        onChange={(e) => setReceiver(e.target.value)}
-                        margin="normal"
-                        slotProps={{ htmlInput: { maxLength: 30 , minLength: 6} }}
-                    />
+                        <TextField
+                            data-test="receiver"
+                            label="Receiver"
+                            variant="outlined"
+                            fullWidth
+                            required
+                            type="email"
+                            value={receiver}
+                            onChange={(e) => setReceiver(e.target.value)}
+                            margin="normal"
+                            slotProps={{ htmlInput: { maxLength: 30 , minLength: 6} }}
+                        />
 
-                    {message && (
-                        <Typography variant="body2"
-                                    color={isError ? "red" : "green"}
-                                    align="center"
+                        {message && (
+                            <Typography variant="body2"
+                                        color={isError ? "red" : "green"}
+                                        align="center"
+
+                            >
+                                {message}
+                            </Typography>
+                        )}
+
+                        <Button
+                            data-test="submit"
+                            type="submit"
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            sx={{ mt: 2, textTransform: "none", fontSize: "100%"}}
+                            disabled={isLoading}
 
                         >
-                            {message}
-                        </Typography>
-                    )}
+                            {isLoading ? "Processing..." : "Transfer"}
+                        </Button>
+                    </form>
 
-                    <Button
-                        data-test="submit"
-                        type="submit"
-                        variant="contained"
-                        color="primary"
-                        fullWidth
-                        sx={{ mt: 2, textTransform: "none", fontSize: "100%"}}
-                        disabled={isLoading}
-
-                    >
-                        {isLoading ? "Processing..." : "Transfer"}
-                    </Button>
-                </form>
-
-            </Box>
+                </Box>
         </Container>
     )
 }

@@ -9,6 +9,10 @@ exports.sendPayment = async(req, res, next) => {
     const receiver = req.body.receiver;
     const sender = user.email;
 
+    if(receiver === sender){
+        return next(createError(402, "User cannot transfer money to itself"));
+    }
+
     if(user.balance < amount){
         return next(createError(402, "User dont have enough money"));
     }
