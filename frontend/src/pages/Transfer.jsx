@@ -78,8 +78,7 @@ const Transfer = () => {
             {isTransferDone ? (
                 <RequestVideoChatDialog
                     onClose={() => setIsTransferDone(false)}
-                    handleYesButton={() => navigate("/user/videochat")}
-                ></RequestVideoChatDialog>
+                    handleYesButton={() => navigate("/user/videochat")}></RequestVideoChatDialog>
             ):(
                 <></>
             )}

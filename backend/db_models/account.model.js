@@ -1,9 +1,21 @@
 const mongoose = require('mongoose');
 
+const MessageSchema = mongoose.Schema({
+        isRead: {
+            type: Boolean,
+            default: false
+        },
+        message: {
+            type: String,
+            required: [true, "Message cannot be empty"]
+        },
+    }, {timestamps: true}
+);
+
 const AccountSchema = mongoose.Schema({
         email: {
             type: String,
-            required: [true, "Please enter email"], // second item in array is custome massage !!!
+            required: [true, "Please enter email"], // second item in array is custom massage !!!
             unique: true
         },
         password:{
@@ -31,6 +43,16 @@ const AccountSchema = mongoose.Schema({
         transactions: {
             type: Array,
             default: []
+        },
+        messages: {
+            readMessages:{
+                type: [MessageSchema],
+                default: []
+            },
+            unreadMessages:{
+                type: [MessageSchema],
+                default: []
+            }
         }
     },
     {

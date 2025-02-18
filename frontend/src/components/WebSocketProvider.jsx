@@ -41,6 +41,10 @@ export const WebSocketProvider = (components) => {
         socket.current.on('message', (data) => {
             setShowAlert(true);
             setAlertMessage(data.message);
+            if(path === "/user/messages"){
+                window.location.reload(true);
+                console.log(path);
+            }
         });
 
         return () => {

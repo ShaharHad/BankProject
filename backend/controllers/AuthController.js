@@ -87,12 +87,12 @@ exports.activateAccount = async(req, res, next) => {
 
     jwt.verify(token, process.env.TOKEN_SECRET,(err, decoded) => {
         if(err){
-            return next(createError(500, "server error"));
+            return res.send('<h1>Token not valid !!!!</h1>');
         }
 
         getAccount(decoded.email).then( async (account) => {
             if(!account){
-                return next(createError(404, "Account not found"));
+                return res.send('<h1>Account not found !!!!</h1>');
             }
 
             if(account.isActive){

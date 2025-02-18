@@ -1,16 +1,15 @@
 //appBar component default color is blue (primary)
 import {AppBar, Toolbar, Typography, Button, Icon, Container} from '@mui/material';
+import EmailTwoToneIcon from '@mui/icons-material/EmailTwoTone';
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import {useNavigate} from "react-router-dom";
 
 import {useGlobal} from "./GlobalProvider.jsx";
 
-
-
 const NavBar = () => {
 
   const navigate = useNavigate();
-  const { isTransactionsChanged }  = useGlobal();
+  const { isTransactionsChanged, haveNewMessages }  = useGlobal();
   const token = sessionStorage.getItem('token');
 
   return (
@@ -23,7 +22,7 @@ const NavBar = () => {
               <AccountBalanceIcon/>
             </Icon>
             <Typography variant="h5" sx={{flexGrow: 1, color: 'inherit'}}>
-              Shahar's bank
+              {"Shahar's bank"}
               <Typography sx={{flexGrow: 1}}>
                 Because your money worth more
               </Typography>
@@ -60,6 +59,14 @@ const NavBar = () => {
               color="inherit"
               onClick={() => navigate('/user/transactions')}>
             Transactions
+          </Button>
+          <Button
+              data-test="messages"
+              color="inherit"
+              onClick={() => navigate('/user/messages')}
+          >
+            Messages
+            {haveNewMessages && <EmailTwoToneIcon />}
           </Button>
           <Button data-test="logout" color="inherit" onClick={() => {
 

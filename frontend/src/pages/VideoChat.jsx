@@ -13,7 +13,10 @@ const VideoChat = () => {
     return (
         <Container>
             <Typography variant="h3" >Banking Secure Video Chat</Typography>
-            <JitsiMeetComponent email={email} handleExit={() => navigate("/user/transfer")} />
+            <JitsiMeetComponent
+                email={email}
+                handleExit={() => navigate("/user/transfer")
+            }/>
         </Container>
     );
 };

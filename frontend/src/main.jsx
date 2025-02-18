@@ -12,6 +12,7 @@ import Deposit from "./pages/Deposit.jsx";
 import Withdraw from "./pages/Withdraw.jsx";
 import Transfer from "./pages/Transfer.jsx";
 import Transactions from "./pages/Transactions.jsx";
+import Messages from "./pages/Messages.jsx";
 
 import VideoChat from "./pages/VideoChat.jsx";
 
@@ -29,6 +30,7 @@ import '@fontsource/roboto/700.css';
 import {WebSocketProvider} from "./components/WebSocketProvider.jsx";
 
 
+
 const router = createBrowserRouter([
 
     {path:'/', element:<Layout/>, children:[
@@ -40,6 +42,7 @@ const router = createBrowserRouter([
             {path: '/user/withdraw', element: <ProtectedRoute> <Withdraw/> </ProtectedRoute>},
             {path: '/user/transfer', element: <ProtectedRoute> <Transfer/> </ProtectedRoute>},
             {path: '/user/transactions', element: <ProtectedRoute> <Transactions/> </ProtectedRoute>},
+            {path: '/user/messages', element: <ProtectedRoute> <Messages/> </ProtectedRoute>},
             {path: '/user/videochat', element: <ProtectedRoute> <VideoChat/> </ProtectedRoute>},
             {path: "*", element: <NotFoundPage/>}
         ]},

@@ -8,6 +8,7 @@ const app = express();
 const authRoutes = require('./routes/AuthRouter');
 const accountRouter = require('./routes/AccountRouter');
 const transactionRoutes = require('./routes/TransactionRouter');
+const messagesRoutes = require('./routes/MessagesRoutes');
 const authMiddleware = require('./middleware/AuthMiddleware');
 const errorHandler = require('./middleware/ErrorHandelingMiddleware');
 const logger = require('./utils/Logger');
@@ -46,6 +47,7 @@ app.use(middlewareMorgan);
 app.use(authMiddleware);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/account/transaction', transactionRoutes);
+app.use('/api/v1/account/message', messagesRoutes);
 app.use('/api/v1/account', accountRouter);
 
 app.use(errorHandler);

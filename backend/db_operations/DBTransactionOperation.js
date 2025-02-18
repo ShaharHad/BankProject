@@ -1,5 +1,5 @@
 const Account = require('../db_models/account.model');
-const dbConnection = require('../db_connection/db_connection');
+const dbConnection = require('../db_connection/db_connection');// for combine 2 operations in 1 transaction
 const {createError} = require("../utils/CreateError");
 
 
@@ -22,10 +22,12 @@ const transferMoney = async (sender, receiver, transaction) => {
             {email: sender},
             {$push: {transactions: transaction}, $inc: {balance: -transaction.payment}}
         );
-
+        const msg = `${sender} send ${transaction.payment}$`;
         const account_receiver = await updateAccount(
             {email: receiver},
-            {$push: {transactions: transaction}, $inc: {balance: transaction.payment}}
+            {
+                $push: {transactions: transaction, "messages.unreadMessages": {isRead: false, message: msg}},
+                $inc: {balance: transaction.payment}}
         );
 
         if(!account_receiver){

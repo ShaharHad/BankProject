@@ -20,8 +20,6 @@ const Transactions = () => {
     const {baseUrl, transactions, setTransactions, isTransactionsChanged } = useGlobal();
     const [isLoading, setIsLoading] = useState(false);
 
-
-
     useEffect(() => {
         const fetchTransactions= async () => {
             setIsLoading(true);
