@@ -37,6 +37,16 @@ const initializeWebSocket = (server) => {
             }
         });
 
+        socket.on('send_meeting_invitation', (data) => {
+            const receiverSockets = connectedAccounts.get(data.receiver);
+            if(receiverSockets){
+                receiverSockets.forEach((socketId) => {
+                    io.to(socketId).emit('get_meeting_invitation', data.link);
+                })
+                logger.info(`Account ${socket.email} send meeting invitation to ${data.receiver}`);
+            }
+        });
+
         socket.on('disconnect', () => {
             if(socket.email && connectedAccounts.has(socket.email)){
                 const setOfSockets = connectedAccounts.get(socket.email);

@@ -8,6 +8,7 @@ export const GlobalProvider = (components) => {
     const children = components.children;
     const [balance, setBalance] = useState(0);
     const [transactions, setTransactions] = useState([]);
+    const [haveNewMessages, setHaveNewMessages] = useState(false);
     const isTransactionsChanged = useRef(true);
     const account = useRef({});
     const baseUrl = import.meta.env.VITE_BASE_URL;
@@ -29,7 +30,7 @@ export const GlobalProvider = (components) => {
 
     return (
         <GlobalContext.Provider value={{ balance, setBalance, baseUrl,
-            transactions, setTransactions, isTransactionsChanged, account, setNewBalance}}>
+            transactions, setTransactions, isTransactionsChanged, account, setNewBalance, haveNewMessages, setHaveNewMessages}}>
             {children}
         </GlobalContext.Provider>
     );

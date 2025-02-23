@@ -9,7 +9,9 @@ const Message = (data)=>{
         <Card sx={{
             maxWidth: "40vw",
             borderLeft: data.isRead ? "5px solid green" : "5px solid yellow",
-            backgroundColor: "rgba(242,249,255, 0.9)",}}
+            backgroundColor: "rgba(242,249,255, 0.9)",
+            mt: 1
+        }}
         >
             <CardContent>
                 {

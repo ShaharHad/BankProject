@@ -1,21 +1,28 @@
 import {JaaSMeeting} from "@jitsi/react-sdk";
 import {Box, CircularProgress} from "@mui/material";
-import {useEffect, useState} from "react";
+import {useContext, useEffect, useState} from "react";
+
 import { useGlobal } from "./GlobalProvider.jsx";
 import Axios from "../utils/Axios.js";
+import { WebSocketContext } from './WebSocketProvider.jsx';
 
 const JitsiMeetComponent = (data) => {
-
     const [jwt, setJwt] = useState("");
     const [showMeeting, setShowMeeting] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const { baseUrl } = useGlobal();
+    const socket = useContext(WebSocketContext);
 
     const appID = import.meta.env.VITE_JITSI_APP_ID;
 
     useEffect(() => {
         Axios.get(baseUrl + "/auth/generateJitsiToken").then((res) => {
             setJwt(res.data.token);
+            socket.current.emit('send_meeting_invitation',
+                {
+                    link: "https://8x8.vc/vpaas-magic-cookie-5f70589d877144808f23b680457d8c5c/Bank_meeting_" + data.name,
+                    receiver: data.receiver,
+                });
         }).catch((err) => {
             console.error(err);
         }).finally(() => {
@@ -31,16 +38,6 @@ const JitsiMeetComponent = (data) => {
         setShowMeeting(false);
         console.log("The user has hung up the meeting.");
     };
-
-    const updateParticipants = () => {
-
-        if("handleExit" in data){
-            data.handleExit();
-        }
-        console.log("The user has hung up the meeting.");
-
-    };
-
 
     return (
         isLoading ? (
@@ -58,7 +55,7 @@ const JitsiMeetComponent = (data) => {
                     <Box >
                         <JaaSMeeting
                             appId = { appID }
-                            roomName = {`Bank-${data.email}`}
+                            roomName = {`Bank_meeting_${data.name}`}
                             jwt = { jwt }
                             getIFrameRef={(node) => (node.style.height = "800px")}
                             configOverwrite = {{
@@ -78,8 +75,6 @@ const JitsiMeetComponent = (data) => {
                             }}
                             onApiReady={(api) => { // configure listeners
                                 api.on('videoConferenceLeft', handleHangup);
-                                // api.on('videoConferenceLeft', handleHangup);
-                                // api.on('videoConferenceLeft', handleHangup);
                             }}
                         />
                     </Box>

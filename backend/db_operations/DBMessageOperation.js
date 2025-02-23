@@ -1,13 +1,14 @@
 const Account = require("../db_models/account.model");
 
 exports.markedMessageAsRead = async(query, update, options) => {
+
     try{
-        return await Account.findOneAndUpdate(query, update, options);
-    }
-    catch(err){
+        await Account.findOneAndUpdate(query, update, options);
+    } catch(err) {
         throw err;
     }
 }
+
 
 exports.getAllMessagesFromAccount = async(query) => {
     try{

@@ -18,7 +18,7 @@ export const WebSocketProvider = (components) => {
     const [showAlert, setShowAlert] = useState(false);
     const [alertMessage, setAlertMessage] = useState("");
 
-    const { account } = useGlobal();
+    const { account, setHaveNewMessages, isTransactionsChanged } = useGlobal();
     const path = window.location.pathname;
 
     useEffect(() => {
@@ -41,10 +41,14 @@ export const WebSocketProvider = (components) => {
         socket.current.on('message', (data) => {
             setShowAlert(true);
             setAlertMessage(data.message);
-            if(path === "/user/messages"){
-                window.location.reload(true);
-                console.log(path);
-            }
+            setHaveNewMessages(true);
+            isTransactionsChanged.current = true;
+        });
+
+        socket.current.on('get_meeting_invitation', (data) => {
+            setShowAlert(true);
+            setAlertMessage(data);
+            setHaveNewMessages(true);
         });
 
         return () => {

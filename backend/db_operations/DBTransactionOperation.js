@@ -26,7 +26,11 @@ const transferMoney = async (sender, receiver, transaction) => {
         const account_receiver = await updateAccount(
             {email: receiver},
             {
-                $push: {transactions: transaction, "messages.unreadMessages": {isRead: false, message: msg}},
+                // $push: {transactions: transaction, "messages.unreadMessages": {isRead: false, message: msg}},
+                $push: {
+                    transactions: {$each: [transaction],$position: 0},
+                    "messages.unreadMessages": { $each: [{ isRead: false, message: msg }], $position: 0 }
+                },
                 $inc: {balance: transaction.payment}}
         );
 

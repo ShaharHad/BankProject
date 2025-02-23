@@ -51,16 +51,15 @@ const Transfer = () => {
                 }
                 else if(err.status !== 500) {
                     console.error(err);
-                    setMessage(err.response.data.message);
+                    setMessage(err.response.message);
                 }
                 else{
                     setMessage("An error occurred. Please try again later.");
                     console.error(err.message);
                 }
-            })
-
-        setIsLoading(false);
-
+            }).finally(() => {
+                setIsLoading(false);
+            });
     }
 
     return (
@@ -75,12 +74,11 @@ const Transfer = () => {
 
             }}
         >
-            {isTransferDone ? (
+            {isTransferDone && (
                 <RequestVideoChatDialog
                     onClose={() => setIsTransferDone(false)}
-                    handleYesButton={() => navigate("/user/videochat")}></RequestVideoChatDialog>
-            ):(
-                <></>
+                    handleYesButton={() => navigate("/user/videochat", {state: {receiver: receiver, amount: amount}})}
+                ></RequestVideoChatDialog>
             )}
             <Box
                 sx={{

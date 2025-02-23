@@ -59,7 +59,6 @@ exports.login = async(req, res, next) => {
         if(!compare_result){
             return next(createError(401, "Authentication failed"));
         }
-
         const token = jwt.sign({email: email}, process.env.TOKEN_SECRET, {expiresIn: '1h'});
 
         const newAccount = {
@@ -68,7 +67,10 @@ exports.login = async(req, res, next) => {
             name: account.name,
             phone: account.phone,
         }
-        return res.status(200).json({token: token, account: newAccount, balance: account.balance});
+
+        const isNewMessages=  account.messages.unreadMessages.length !== 0
+
+        return res.status(200).json({token: token, account: newAccount, balance: account.balance, isNewMessages: isNewMessages});
 
     }).catch((err) => {
         logger.error(err.message);

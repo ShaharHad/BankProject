@@ -12,7 +12,7 @@ axios.defaults.withCredentials = true;
 const Messages = () => {
 
     const navigate = useNavigate();
-    const { baseUrl } = useGlobal();
+    const { baseUrl, setHaveNewMessages } = useGlobal();
     const [isLoading, setIsLoading] = useState(false);
     const [messages, setMessages] = useState([]);
     const readMessages = useRef([]);
@@ -22,14 +22,23 @@ const Messages = () => {
     const visibleData = 5;
 
     const markMessageAsRead = async (id) => {
+        const index = unreadMessages.current.findIndex(obj => obj._id === id);
+        if(index === -1){
+            console.error("No exist message to set the isRead field");
+            return;
+        }
         Axios.put(`${baseUrl}/account/message/`, {
-            id: id,
+            msg: unreadMessages.current[index],
         }).then(() => {
-            const index = unreadMessages.current.findIndex(obj => obj._id === id);
+
             const msg = { ...unreadMessages.current.splice(index, 1)[0], isRead: true };
             readMessages.current.push(msg);
-            console.log("unreadMessages", unreadMessages.current);
-            console.log("readMessages", readMessages.current);
+            if(unreadMessages.current.length === 0){
+                setHaveNewMessages(false);
+            }
+            else{
+                setHaveNewMessages(true);
+            }
             setMessages([...unreadMessages.current, ...readMessages.current]);
 
         }).catch((err) => {
@@ -43,9 +52,17 @@ const Messages = () => {
             setIsLoading(true);
             await Axios.get(baseUrl + "/account/message/")
                 .then((response) => {
+                    console.log(response);
+                    if(response.data.messages.unreadMessages.length === 0){
+                        setHaveNewMessages(false);
+                    }
+                    else{
+                        setHaveNewMessages(true);
+                    }
                     readMessages.current = response.data.messages.readMessages;
                     unreadMessages.current = response.data.messages.unreadMessages;
                     setMessages([...unreadMessages.current, ...readMessages.current]);
+
                 }).catch((err) =>{
                     if(err.status === 401){ // authentication failed and should be moved to login page
                         alert("Navigate to login screen duo to inactive account");

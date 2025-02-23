@@ -9,7 +9,7 @@ import { WebSocketContext } from '../components/WebSocketProvider.jsx';
 axios.defaults.withCredentials = true;
 
 const Login = () => {
-  const { setBalance, baseUrl, account } = useGlobal();
+  const { setBalance, baseUrl, account, setHaveNewMessages } = useGlobal();
   const socket = useContext(WebSocketContext);
 
     const [email, setEmail] = useState('');
@@ -30,12 +30,15 @@ const Login = () => {
       password: password
     }).then((response) => {
       setBalance(response.data.balance);
+      setHaveNewMessages(response.data.isNewMessages);
       sessionStorage.setItem("balance", response.data.balance);
       sessionStorage.setItem("token", response.data.token);
       sessionStorage.setItem("account", JSON.stringify(response.data.account));
       account.current = response.data.account;
       socket.current.emit('register', {email: email});
       navigate("/user/home");
+
+      console.log("data", response.data);
     }).catch((err) => {
         if(err.response.status !== 500){
             setMessage(err.response.data.message);

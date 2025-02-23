@@ -24,8 +24,7 @@ module.exports = ( async (req, res, next) => {
             return res.status(401).json({message: "token not valid"});
         }
 
-        Account.findOne({email: decode.email}).then((account) => {
-
+        Account.findOne({email: decode.email}).select({transactions: 0, messages: 0}).then((account) => {
             if(null == account){
                 logger.warn("account " + decode.email + " not found");
                 return res.status(401).json({message: "Authentication failed"});

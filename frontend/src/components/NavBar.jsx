@@ -11,7 +11,6 @@ const NavBar = () => {
   const navigate = useNavigate();
   const { isTransactionsChanged, haveNewMessages }  = useGlobal();
   const token = sessionStorage.getItem('token');
-
   return (
       <Container maxWidth="false" disableGutters>
         <AppBar position="sticky">
