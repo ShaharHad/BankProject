@@ -97,6 +97,7 @@ exports.withdraw = async(req, res, next) => {
     }
 }
 
+//TODO modify to pagination
 exports.getTransactions = async(req, res, next) => {
 
     try{
@@ -109,5 +110,4 @@ exports.getTransactions = async(req, res, next) => {
         logger.error(err.message);
         return next(createError(500, err.message));
     }
-
 }

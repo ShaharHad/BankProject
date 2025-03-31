@@ -65,5 +65,7 @@ VITE_BASE_URL=your_base_url
 - **socket.io-client** A socket to send/listen to events from the server.
 - **axios**: An promise-based HTTP client for making requests to API.
 - **chart.js**: library for creating interactive and customizable charts in javascript.
-- **react-chartjs-2**:  A React wrapper for Chart.js, allowing Chart.js charts to be used as React components.
+- **react-chartjs-2**: A React wrapper for Chart.js, allowing Chart.js charts to be used as React components.
 - **socket.io-client**: A client-side library for enabling real-time, bidirectional communication with a server using Socket.IO.
+- **Jitsi**: A open-source video conferencing platform that allows users to make video calls, 
+host meetings, and collaborate in real time. Use Jaas (Jitsi As A Service to integrate jitsi in the app)

@@ -292,18 +292,18 @@ REFRESH_TOKEN=your_gmail_refresh_token
 
 ## Technologies and libraries Used
 
-- **node js**: A framework to run javascript.
-- **express**: A web application framework that provides methods for routing, middlewares and handling HTTP requests and response.
-- **jsonwebtoken**: Handles JSON Web Tokens (JWT) for authentication.
-- **express-validator**: Provides validation and sanitization middleware for Express.
-- **bcryptjs**: Provides hashing and salting functionalities for passwords.
-- **cors**: Enables Cross-Origin Resource Sharing (CORS).
-- **dotenv**: Loads environment variables from a .env file into process.env.
-- **googleapis**: Provides access to Google's APIs (used for access to gmail api) 
-- **mongoose**: An Object Data Modeling (ODM) library for MongoDB
-- **morgan**: HTTP request logger middleware for Express.
-- **winston**: A logging library for Node.js
-- **socket.io**: Enables real-time, bidirectional communication between server and client
-- **nodemailer**: Sends emails from Node.js applications
-- **jest**: JavaScript testing framework
-- **supertest**: HTTP assertions library for testing APIs
+- **Node js**: A Environment to run javascript.
+- **Express**: A web application framework that provides methods for routing, middlewares and handling HTTP requests and response.
+- **Jsonwebtoken**: Handles JSON Web Tokens (JWT) for authentication.
+- **Express-validator**: Provides validation and sanitization middleware for Express.
+- **Bcryptjs**: Provides hashing and salting functionalities for passwords.
+- **Cors**: Enables Cross-Origin Resource Sharing (CORS).
+- **Dotenv**: Loads environment variables from a .env file into process.env.
+- **Googleapis**: Provides access to Google's APIs (used for access to gmail api) 
+- **Mongoose**: An Object Data Modeling (ODM) library for MongoDB
+- **Morgan**: HTTP request logger middleware for Express.
+- **Winston**: A logging library for Node.js
+- **Socket.io**: Enables real-time, bidirectional communication between server and client
+- **Nodemailer**: Sends emails from Node.js applications
+- **Jest**: JavaScript testing framework
+- **Supertest**: HTTP assertions library for testing APIs
